@@ -1,0 +1,16 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 穿山甲融合SDK 必要权限 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!--
+      说明：官方文档建议为 CSJ 广告配置 TTFileProvider（用于下载类广告的文件共享），
+      但 SDK 的 TTFileProvider 继承自旧版 android.support.v4.content.FileProvider，
+      在纯 AndroidX（无 jetifier）的 RN 工程中会导致启动崩溃 NoClassDefFoundError。
+      核心广告展示（开屏/激励/插屏/Banner/信息流/Draw）无需该 provider，故默认不声明。
+      接入方若需要下载类广告的 FileProvider，可在 App 侧启用 jetifier
+      (android.enableJetifier=true) 后自行按官方文档声明 TTFileProvider + pangle_file_paths.xml。
+      本库已内置 res/xml/pangle_file_paths.xml 供复用。
+    -->
+</manifest>

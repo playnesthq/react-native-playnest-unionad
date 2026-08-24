@@ -1,0 +1,65 @@
+buildscript {
+  ext.PlaynestUnionad = [
+    kotlinVersion: "2.0.21",
+    minSdkVersion: 24,
+    compileSdkVersion: 36
+  ]
+
+  ext.getExtOrDefault = { prop ->
+    if (rootProject.ext.has(prop)) {
+      return rootProject.ext.get(prop)
+    }
+
+    return PlaynestUnionad[prop]
+  }
+
+  repositories {
+    google()
+    mavenCentral()
+  }
+
+  dependencies {
+    classpath "com.android.tools.build:gradle:8.7.2"
+    // noinspection DifferentKotlinGradleVersion
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${getExtOrDefault('kotlinVersion')}"
+  }
+}
+
+
+apply plugin: "com.android.library"
+apply plugin: "kotlin-android"
+
+apply plugin: "com.facebook.react"
+
+repositories {
+  google()
+  mavenCentral()
+  // 穿山甲(Pangle) 官方 maven 源
+  maven { url "https://artifact.bytedance.com/repository/pangle" }
+}
+
+android {
+  namespace "com.playnestunionad"
+
+  compileSdkVersion getExtOrDefault("compileSdkVersion")
+
+  defaultConfig {
+    minSdkVersion getExtOrDefault("minSdkVersion")
+    consumerProguardFiles "proguard-rules.pro"
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
+  }
+}
+
+dependencies {
+  implementation "com.facebook.react:react-android"
+  implementation "androidx.appcompat:appcompat:1.6.1"
+  // 穿山甲融合SDK(GroMore)。官方 maven 版本，等价于本地 open_ad_sdk_7.6.1.1 aar。
+  // 只接入穿山甲广告只需此包；如需聚合三方 ADN(GDT/Baidu/KS/Sigmob)，接入方在 app 侧另加对应 adapter。
+  implementation "com.pangle_beta.cn:mediation-sdk:7.6.1.1"
+  // SDK 下载库依赖（官方接入须知要求）
+  implementation "com.squareup.okhttp3:okhttp:3.12.1"
+}
