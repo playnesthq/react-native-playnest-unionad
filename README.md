@@ -1,6 +1,6 @@
 # react-native-playnest-unionad
 
-React Native 穿山甲(GroMore / UnionAD)广告插件。完整移植自 Flutter 插件 [flutter_unionad](https://github.com/gstory0404/flutter_unionad)，覆盖其全部广告能力：
+React Native 穿山甲(UnionAD)广告插件。完整移植自 Flutter 插件 [flutter_unionad](https://github.com/gstory0404/flutter_unionad)，覆盖其全部广告能力：
 
 | 类型 | API | iOS | Android |
 |---|---|---|---|
@@ -82,7 +82,7 @@ source 'https://cdn.cocoapods.org/'
 
 ### 1. 添加穿山甲 maven 源（**必配**）
 
-穿山甲融合 SDK（`com.pangle_beta.cn:mediation-sdk`）来自字节跳动的 maven 仓库。请在**宿主工程根目录** `android/build.gradle` 的 `allprojects.repositories` 添加：
+本库依赖的穿山甲 SDK（`com.pangle_beta.cn:mediation-sdk`）来自字节跳动的 maven 仓库。请在**宿主工程根目录** `android/build.gradle` 的 `allprojects.repositories` 添加：
 
 ```gradle
 allprojects {
@@ -112,7 +112,27 @@ allprojects {
 
 穿山甲原生库只含 `arm64-v8a` / `armeabi-v7a`。**Intel 模拟器无法加载**，请用真机或 **arm64 模拟器**（Apple Silicon 上的 Android Studio 模拟器即为 arm64）。可选：在 app `build.gradle` 用 `abiFilters 'arm64-v8a'` 精简包体。
 
-### 5. 下载类广告的 FileProvider（可选，默认不需要）
+### 5. 可选权限（按需自取，默认不加）
+
+本库只声明**必需权限**（`INTERNET` / `WAKE_LOCK` / `ACCESS_NETWORK_STATE`）。穿山甲官方另有一批**可选权限**，用于防作弊与提升广告填充/定向——**加了能提升变现效果，不加广告也能正常展示**。是否添加由你的 App 自行权衡（变现收益 vs 隐私合规 / 商店审核），在宿主 `android/app/src/main/AndroidManifest.xml` 声明：
+
+```xml
+<!-- 可选：防作弊 + 提升广告填充/定向，按需自取 -->
+<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+<uses-permission android:name="android.permission.GET_TASKS" />
+<!-- QUERY_ALL_PACKAGES：判定广告应用是否已安装以提升体验。⚠️ Google Play 严格管控，
+     需单独申报用途，且必须在隐私政策中声明，慎用（国内商店影响较小） -->
+<uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+```
+
+> 这些均为敏感/危险权限，会影响应用商店审核与隐私合规。建议**只加你确实需要的**，并在隐私政策中如实声明。
+
+### 6. 下载类广告的 FileProvider（可选，默认不需要）
 
 穿山甲官方文档建议为下载类广告配置 `TTFileProvider`。但该 provider 继承旧版 `android.support.v4.content.FileProvider`，在**纯 AndroidX（未开启 jetifier）** 的 RN 工程中声明它会导致启动崩溃。因此**本库默认不声明**该 provider —— 开屏 / 激励 / 插屏 / Banner / 信息流 / Draw 的展示都不需要它。
 
@@ -120,124 +140,293 @@ allprojects {
 
 ---
 
-## 快速开始
+# 使用指南（可直接复制）
+
+以下代码段包含每个接口的**全部参数与全部回调**，复制后按需删改即可。测试用 appId / 广告位见文末。
+
+## 一、初始化 SDK
+
+**调用任何广告接口前，必须先 `await register()` 成功。** 建议在 App 启动时执行一次。
+
+```tsx
+import { register, UnionadTheme } from 'react-native-playnest-unionad';
+
+async function initAd() {
+  const ok = await register({
+    androidAppId: '5750023',          // 必填：Android appId
+    iosAppId: '5750023',              // 必填：iOS appId
+    appName: 'MyApp',                 // 选填：应用名
+    useMediation: true,               // 选填：启用聚合能力，默认 true。用穿山甲广告位保持默认即可
+    paid: false,                      // 选填：是否计费用户，默认 false
+    keywords: '',                     // 选填：用户画像关键词
+    allowShowNotify: true,            // 选填：允许 SDK 弹通知，默认 true
+    debug: __DEV__,                   // 选填：debug 日志，默认 false
+    supportMultiProcess: false,       // 选填：多进程，默认 false（仅 Android）
+    themeStatus: UnionadTheme.DAY,    // 选填：主题 DAY(0)/NIGHT(1)，默认 DAY
+    iosPrivacy: {                     // 选填：iOS 隐私合规（聚合维度）
+      limitPersonalAds: false,        //   是否限制个性化广告，默认 false
+      limitProgrammaticAds: false,    //   是否限制程序化广告，默认 false
+      forbiddenCAID: false,           //   是否禁止 IDFA/CAID，默认 false
+    },
+  });
+  console.log('穿山甲初始化', ok ? '成功' : '失败');
+}
+```
+
+## 二、SDK 版本 / 主题模式
+
+```tsx
+import { getSDKVersion, getThemeStatus } from 'react-native-playnest-unionad';
+
+const version = await getSDKVersion();       // 例如 "7.6.1.1"
+const theme = await getThemeStatus();        // 0 日间 / 1 夜间
+```
+
+## 三、请求 ATT 权限（iOS）
+
+> **iOS 调用前，宿主 `Info.plist` 必须配置 `NSUserTrackingUsageDescription`，否则崩溃。**
+> Android 不需要此步，恒返回 `3(authorized)`。
 
 ```tsx
 import {
-  register,
-  getSDKVersion,
+  requestPermissionIfNecessary,
+  UnionadPermission,
+} from 'react-native-playnest-unionad';
+
+const status = await requestPermissionIfNecessary();
+// status 取值见 UnionadPermission：
+//   0 notDetermined 未确定 / 1 restricted 受限 / 2 denied 拒绝 / 3 authorized 已授权
+if (status === UnionadPermission.authorized) {
+  console.log('已授权广告跟踪');
+}
+```
+
+## 四、激励视频
+
+先 `loadRewardVideoAd` 预加载（回调驱动全过程），`onReady` 后再 `showRewardVideoAd` 展示。
+
+```tsx
+import {
   loadRewardVideoAd,
   showRewardVideoAd,
 } from 'react-native-playnest-unionad';
 
-// 1) 初始化（调用任何广告接口前必须先成功初始化）
-await register({
-  androidAppId: '5750023',
-  iosAppId: '5750023',
-  appName: 'MyApp',
-  debug: __DEV__,
-});
-
-console.log('SDK 版本', await getSDKVersion());
-
-// 2) 预加载激励视频，回调驱动整个生命周期
+// 预加载。返回取消订阅函数，广告生命周期结束后调用以移除监听。
 const unsub = loadRewardVideoAd(
-  { androidCodeId: '103685185', iosCodeId: '103685185' },
   {
-    onReady: () => showRewardVideoAd(),            // 加载完成即展示
-    onRewardArrived: (v) => console.log('发奖', v), // 推荐以此发奖
-    onClose: () => unsub(),                         // 生命周期结束后取消监听
-    onFail: (e) => { console.warn(e.error); unsub(); },
+    androidCodeId: '103685185',   // 必填：Android 广告位 id
+    iosCodeId: '103685185',       // 必填：iOS 广告位 id
+    rewardName: '金币',           // 选填：奖励名称
+    rewardAmount: 1,              // 选填：奖励数量，默认 1
+    userID: 'user_123',           // 选填：用户 id（服务端奖励验证用）
+    mediaExtra: '',               // 选填：服务端奖励验证透传参数
+    orientation: 0,               // 选填：0 竖屏 / 1 横屏，默认 0
+    mutedIfCan: true,             // 选填：是否静音，默认 true
+  },
+  {
+    onReady: () => {              // 物料加载完成，可展示
+      showRewardVideoAd();        //   这里直接展示；也可存标志位延后展示
+    },
+    onCache: () => {},            // 视频文件缓存完成
+    onShow: () => {},             // 广告展示
+    onClick: () => {},            // 广告点击
+    onClose: () => { unsub(); },  // 广告关闭 → 取消监听
+    onSkip: () => {},             // 跳过视频
+    onVerify: (v) => {            // 奖励验证（旧版回调）
+      // v: { rewardVerify, rewardAmount, rewardName, errorCode, error }
+    },
+    onRewardArrived: (v) => {     // 奖励到账（新版回调，★推荐以此发奖）
+      // v: { rewardVerify, rewardAmount, rewardName, errorCode, error, rewardType?, propose? }
+      if (v.rewardVerify) {
+        // 发放奖励
+      }
+    },
+    onFail: (e) => { console.warn(e.error); unsub(); }, // 加载/渲染失败
+    onUnReady: (e) => {},         // 未加载完成就调用了展示
+    onEcpm: (info) => {           // eCPM 信息（info 见文末 EcpmInfo）
+      console.log('reward ecpm', info?.ecpm);
+    },
+  }
+);
+
+// 展示已预加载的激励视频（通常在 onReady 内调用）
+await showRewardVideoAd();
+```
+
+## 五、全屏视频 / 插屏（二合一）
+
+```tsx
+import {
+  loadFullScreenVideoAd,
+  showFullScreenVideoAd,
+  UnionadOrientation,
+} from 'react-native-playnest-unionad';
+
+const unsub = loadFullScreenVideoAd(
+  {
+    androidCodeId: '103687132',              // 必填：Android 广告位 id
+    iosCodeId: '103687132',                  // 必填：iOS 广告位 id
+    orientation: UnionadOrientation.VERTICAL, // 选填：VERTICAL(1)/HORIZONTAL(2)，默认竖屏。仅 Android
+  },
+  {
+    onReady: () => { showFullScreenVideoAd(); }, // 加载/缓存完成，可展示
+    onShow: () => {},                            // 广告展示
+    onClick: () => {},                           // 广告点击
+    onClose: () => { unsub(); },                 // 广告关闭 → 取消监听
+    onFinish: () => {},                          // 视频播放完成
+    onSkip: () => {},                            // 跳过视频
+    onFail: (e) => { console.warn(e.error); unsub(); }, // 加载/渲染失败
+    onUnReady: (e) => {},                        // 未加载完成就调用了展示
+    onEcpm: (info) => {},                        // eCPM 信息
+  }
+);
+
+await showFullScreenVideoAd();
+```
+
+## 六、开屏（方法式全屏）
+
+一次调用即「加载 + 全屏展示」，无需单独 show。
+
+```tsx
+import { showSplashAd } from 'react-native-playnest-unionad';
+
+const unsub = showSplashAd(
+  {
+    androidCodeId: '103687131',   // 必填：Android 广告位 id
+    iosCodeId: '103687131',       // 必填：iOS 广告位 id
+    timeout: 3000,                // 选填：加载超时(ms)，默认 3000。仅 Android
+    width: 0,                     // 选填：期望宽度(dp/pt)，0 表示全屏，默认 0
+    height: 0,                    // 选填：期望高度(dp/pt)，0 表示全屏，默认 0
+    isShake: false,               // 选填：是否支持摇一摇，默认 false
+    supportDeepLink: true,        // 选填：是否支持 DeepLink，默认 true。仅 Android
+  },
+  {
+    onShow: () => {},                          // 广告展示
+    onClick: () => {},                         // 广告点击
+    onSkip: () => { unsub(); },                // 用户点击跳过 → 取消监听
+    onFinish: () => { unsub(); },              // 倒计时结束正常关闭 → 取消监听
+    onFail: (e) => { console.warn(e.error); unsub(); }, // 加载/渲染失败
+    onEcpm: (info) => {},                      // eCPM 信息
   }
 );
 ```
 
----
+## 七、Banner（视图组件）
 
-## API
-
-### 初始化与通用
-
-#### `register(config): Promise<boolean>`
-
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `androidAppId` | `string` | **必填**，Android appId |
-| `iosAppId` | `string` | **必填**，iOS appId |
-| `appName` | `string?` | 应用名 |
-| `useMediation` | `boolean?` | 是否使用聚合(GroMore)，默认 `true` |
-| `paid` | `boolean?` | 是否计费用户 |
-| `keywords` | `string?` | 用户画像关键词 |
-| `allowShowNotify` | `boolean?` | 允许弹通知，默认 `true` |
-| `debug` | `boolean?` | debug 日志，默认 `false` |
-| `supportMultiProcess` | `boolean?` | 多进程，默认 `false`（仅 Android） |
-| `themeStatus` | `number?` | 主题，见 `UnionadTheme`，默认 `DAY` |
-| `iosPrivacy` | `IOSPrivacy?` | iOS 隐私合规（`limitPersonalAds` / `limitProgrammaticAds` / `forbiddenCAID`） |
-
-- `getSDKVersion(): Promise<string>` — SDK 版本号。
-- `getThemeStatus(): Promise<number>` — `0` 日间 / `1` 夜间。
-- `requestPermissionIfNecessary(): Promise<number>` — iOS 返回 ATT 状态（见 `UnionadPermission`：`notDetermined 0` / `restricted 1` / `denied 2` / `authorized 3`）；Android 恒返回 `3`。**iOS 需先配好 `NSUserTrackingUsageDescription`。**
-
-常量：`UnionadTheme`（`DAY/NIGHT`）、`UnionadOrientation`（`VERTICAL 1 / HORIZONTAL 2`）、`UnionadPermission`。
-
-### 激励视频
+视图类广告是 React 组件，直接放进布局即可。**必须给尺寸**（`width/height` 或 `style`），否则不可见。
 
 ```tsx
-const unsub = loadRewardVideoAd(options, callback); // 预加载
-await showRewardVideoAd();                           // 展示
+import { PlaynestBannerAd } from 'react-native-playnest-unionad';
+
+<PlaynestBannerAd
+  androidCodeId="103686668"      // 必填：Android 广告位 id
+  iosCodeId="103686668"          // 必填：iOS 广告位 id
+  width={300}                    // 选填：宽度 dp（同时作为容器宽度）
+  height={150}                   // 选填：高度 dp（同时作为容器高度）
+  style={{ alignSelf: 'center' }}// 选填：容器样式
+  onShow={(e) => {               // 渲染/展示成功，携带实际宽高
+    // e: { width: number, height: number }
+  }}
+  onClick={() => {}}             // 广告点击
+  onFail={(e) => {               // 加载/渲染失败
+    // e: { error: string }
+  }}
+  onEcpm={(info) => {}}          // eCPM 信息（info 见文末 EcpmInfo）
+  onDislike={(e) => {            // 点击不感兴趣（广告已移除）
+    // e: { reason: string }
+  }}
+/>
 ```
 
-`RewardVideoOptions`：`androidCodeId` / `iosCodeId`（必填）、`rewardName?` / `rewardAmount?` / `userID?` / `mediaExtra?`（服务端验证）、`orientation?`（0 竖 / 1 横）、`mutedIfCan?`（默认 `true`）。
-
-`RewardVideoCallback`：`onReady` / `onCache` / `onShow` / `onClick` / `onClose` / `onSkip` / `onVerify` / `onRewardArrived`（推荐发奖）/ `onFail` / `onUnReady` / `onEcpm`。
-
-### 全屏视频 / 插屏（二合一）
+## 八、信息流原生（模板渲染，视图组件）
 
 ```tsx
-const unsub = loadFullScreenVideoAd(options, callback);
-await showFullScreenVideoAd();
+import { PlaynestNativeAd } from 'react-native-playnest-unionad';
+
+<PlaynestNativeAd
+  androidCodeId="103686791"      // 必填
+  iosCodeId="103686791"          // 必填
+  width={330}                    // 选填：宽度 dp
+  height={280}                   // 选填：高度 dp
+  isMuted={true}                 // 选填：视频广告是否静音，默认 true
+  style={{ alignSelf: 'center' }}
+  onShow={(e) => {}}             // e: { width, height }
+  onClick={() => {}}
+  onFail={(e) => {}}             // e: { error }
+  onEcpm={(info) => {}}
+  onDislike={(e) => {}}          // e: { reason }
+/>
 ```
 
-`FullScreenVideoOptions`：`androidCodeId` / `iosCodeId`、`orientation?`（仅 Android）。
-`FullScreenVideoCallback`：`onReady` / `onShow` / `onClick` / `onClose` / `onFinish` / `onSkip` / `onFail` / `onUnReady` / `onEcpm`。
+## 九、Draw 信息流（沉浸式视频，视图组件）
 
-### 开屏（方法式全屏）
+在信息流基础上多了 3 个视频状态回调。
 
 ```tsx
-const unsub = showSplashAd(
-  { androidCodeId: '103687131', iosCodeId: '103687131' },
-  { onShow: () => {}, onFinish: () => unsub(), onSkip: () => unsub(), onFail: (e) => unsub() }
-);
+import { PlaynestDrawAd } from 'react-native-playnest-unionad';
+
+<PlaynestDrawAd
+  androidCodeId="103687068"      // 必填
+  iosCodeId="103687068"          // 必填
+  width={340}                    // 选填：宽度 dp
+  height={500}                   // 选填：高度 dp
+  isMuted={true}                 // 选填：是否静音，默认 true
+  style={{ alignSelf: 'center' }}
+  onShow={(e) => {}}             // e: { width, height }
+  onClick={() => {}}
+  onFail={(e) => {}}             // e: { error }
+  onEcpm={(info) => {}}
+  onDislike={(e) => {}}          // e: { reason }
+  onVideoPlay={() => {}}         // 视频开始播放
+  onVideoPause={() => {}}        // 视频暂停
+  onVideoStop={() => {}}         // 视频停止
+/>
 ```
 
-`SplashOptions`：`androidCodeId` / `iosCodeId`、`timeout?`（仅 Android，默认 3000）、`width?` / `height?`（0 表示全屏）、`isShake?`、`supportDeepLink?`（仅 Android）。
-`SplashCallback`：`onShow` / `onClick` / `onSkip` / `onFinish` / `onFail` / `onEcpm`。
+## 十、开屏（视图版，对齐 flutter splashAdView）
 
-### 视图类广告组件
-
-四个视图广告都是 Fabric 原生组件，公用的回调见 `ViewAdCallbacks`：`onShow({width,height})` / `onClick` / `onFail({error})` / `onEcpm(info)` / `onDislike({reason})`。
+与方法式开屏并存。**不传尺寸 = 全屏；传了尺寸 = 按区域内嵌**（底部可留 logo 区）。
 
 ```tsx
-import {
-  PlaynestBannerAd, PlaynestNativeAd, PlaynestDrawAd, PlaynestSplashAd,
-} from 'react-native-playnest-unionad';
+import { PlaynestSplashAd } from 'react-native-playnest-unionad';
 
-<PlaynestBannerAd androidCodeId="..." iosCodeId="..." width={300} height={150}
-  onShow={(e) => {}} onFail={(e) => {}} />
-
-<PlaynestNativeAd androidCodeId="..." iosCodeId="..." width={330} height={280} isMuted />
-
-<PlaynestDrawAd androidCodeId="..." iosCodeId="..." width={340} height={500}
-  onVideoPlay={() => {}} onVideoStop={() => {}} />
-
-// 开屏视图版：不传尺寸=全屏；传尺寸=按区域内嵌（底部可留 logo 区）
-<PlaynestSplashAd androidCodeId="..." iosCodeId="..."
-  onShow={(e) => {}} onFinish={() => {}} onSkip={() => {}} />
+<PlaynestSplashAd
+  androidCodeId="103687131"      // 必填
+  iosCodeId="103687131"          // 必填
+  // 不传 width/height => 全屏；传了 => 指定区域
+  width={undefined}              // 选填：宽度 dp
+  height={undefined}             // 选填：高度 dp
+  timeout={3000}                 // 选填：加载超时(ms)，默认 3000。仅 Android
+  isShake={false}                // 选填：是否支持摇一摇，默认 false
+  supportDeepLink={true}         // 选填：是否支持 DeepLink，默认 true。仅 Android
+  onShow={(e) => {}}             // e: { width, height }
+  onClick={() => {}}             // 广告点击
+  onSkip={() => {}}              // 用户点击跳过
+  onFinish={() => {}}            // 倒计时结束正常关闭
+  onFail={(e) => {}}             // e: { error }
+  onEcpm={(info) => {}}          // eCPM 信息
+/>
 ```
 
-- `PlaynestBannerAd` / `PlaynestNativeAd` / `PlaynestDrawAd` / `PlaynestSplashAd` 均支持 `width?` / `height?`（dp，省略则由 `style` 决定尺寸）与 `style`。
-- `PlaynestNativeAd` / `PlaynestDrawAd` 支持 `isMuted`（默认 `true`）。
-- `PlaynestDrawAd` 额外有 `onVideoPlay` / `onVideoPause` / `onVideoStop`。
+## eCPM 信息（EcpmInfo）
+
+`onEcpm(info)` 回调的 `info` 为聚合维度对象（部分字段依 ADN 而定），常用字段：
+
+```ts
+interface EcpmInfo {
+  adnName?: string;       // ADN 名称，如 "pangle"
+  slotID?: string;        // 广告位 id
+  ecpm?: string;          // eCPM 价格（字符串）
+  biddingType?: number;   // 竞价类型
+  requestID?: string;     // 请求 id
+  creativeID?: string;    // 创意 id
+  adRitType?: string;     // 广告类型，如 "splash" / "feed"
+  subRitType?: string;    // 细分类型
+  segmentId?: string;     // 流量分组 id
+  // …更多字段见类型定义
+}
+```
 
 ---
 
@@ -277,9 +466,11 @@ import {
 
 - **iOS 调 ATT 崩溃** → 宿主 `Info.plist` 缺 `NSUserTrackingUsageDescription`，见上文。
 - **Android 找不到穿山甲依赖 / 解析失败** → 根 `build.gradle` 未加 pangle maven 源。
-- **Android 广告位不合法（40006）** → 用错了 SDK。本库用的是融合 SDK（`mediation-sdk`），非基础 `ads-sdk-pro`；正式广告位需在 GroMore 后台创建。
+- **广告位不合法（40006）** → 广告位 id 或 appId 不对/不匹配。请使用穿山甲后台创建的广告位，并确保与 `register` 传入的 appId 对应。测试阶段用文末官方测试广告位。
 - **视图广告有 `onShow` 却看不到** → 确认给了尺寸（`width/height` 或 `style`）；开屏视图不传尺寸时才默认全屏。
 - **只出现无填充** → 模拟器 / 测试位特性，换真机或正式广告位。
+
+完整可运行示例见 [example/src/App.tsx](example/src/App.tsx)。
 
 ---
 

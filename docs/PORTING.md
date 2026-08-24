@@ -8,7 +8,12 @@
 |---|---|
 | flutter_unionad 移植基线 | **v2.2.8**（commit `cb314bf`：android SDK 7.6.1.1 / ios SDK 7.6.0.4） |
 | 本库对应 SDK（iOS） | `Ads-CN-Beta/BUAdSDK` + `Ads-CN-Beta/CSJMediation-Only` **7.6.0.4** |
-| 本库对应 SDK（Android） | `com.pangle_beta.cn:mediation-sdk` **7.6.1.1**（融合/GroMore SDK 的 maven 版本） |
+| 本库对应 SDK（Android） | `com.pangle_beta.cn:mediation-sdk` **7.6.1.1**（穿山甲**融合SDK**的 maven 版本，即本地 `open_ad_sdk` aar，与 flutter_unionad 同款；使用**穿山甲广告位**） |
+
+> **SDK 说明**（实测 aar 包名 `com.bytedance.gromore`，内含 `com.bytedance.msdk`+`com.bytedance.sdk.openadsdk`）：
+> - `com.pangle_beta.cn:mediation-sdk`（=`open_ad_sdk`）是穿山甲**融合SDK**，把穿山甲广告与聚合能力打包在一起。**直接用穿山甲广告位即可**（flutter_unionad 多年如此），GroMore 多 ADN 聚合是可选超集。
+> - 本库与 flutter_unionad 一样：`register` 走 `.useMediation(true).setMediationConfig(...)`，各广告用 `setMediationAdSlot(...)` + `mediationManager` 读 ecpm。这套 API 对**穿山甲广告位**同样有效（并非只服务聚合代码位）。
+> - **踩坑记录**：开发中曾误用 `com.pangle.cn:ads-sdk-pro` → 穿山甲测试广告位报 40006「广告位ID不合法」。换回 `open_ad_sdk`/`mediation-sdk` 后正常。**结论只有一条：用 `open_ad_sdk`/`mediation-sdk`，别用 `ads-sdk-pro`**（后者是另一个不兼容的包）。
 
 > 同步新版本时，先在下面「同步 checklist」对照 flutter 的改动点。
 
@@ -96,7 +101,7 @@ Flutter 与 RN 的差别只在**桥接层**；穿山甲 SDK 的调用逻辑（lo
 2. **iOS 模块须继承生成基类**：`@interface PlaynestUnionad : NativePlaynestUnionadSpecBase <NativePlaynestUnionadSpec>`，否则 `emitOnAdEvent:` 找不到。
 3. **改了 spec（`NativePlaynestUnionad.ts` 方法/事件）后必须重跑 `pod install`** 重新生成 codegen，否则 iOS 编译报 "no visible selector"。
 4. **Android 视图广告的布局修复（重要）**：Fabric 下 React 布局一次性下发，SDK 在渲染成功回调里 `addView()` 动态加入的广告子视图不在 shadow tree 中，不会被 measure/layout → 停在 0×0 不可见。解决：所有视图广告容器继承 `PlaynestAdFrameLayout`（重写 `requestLayout()` 主动 `post` 一次 measure+layout）。**新增任何视图广告都要继承它。**
-5. **Android SDK 依赖**：用融合 SDK `com.pangle_beta.cn:mediation-sdk`（GroMore），**不要**用基础 `com.pangle.cn:ads-sdk-pro`（会报广告位不合法 40006）。
+5. **Android SDK 依赖**：用穿山甲**融合SDK** `com.pangle_beta.cn:mediation-sdk`（=`open_ad_sdk`，flutter 同款，穿山甲广告位可用），**不要**用 `com.pangle.cn:ads-sdk-pro`（不兼容，穿山甲广告位会报 40006）。
 6. **Android 不声明 `TTFileProvider`**：SDK 的该 provider 继承旧 support-v4，在纯 AndroidX RN 工程会启动崩溃。核心广告展示不需要它。
 7. **iOS ATT 崩溃**：宿主 Info.plist 必须有 `NSUserTrackingUsageDescription`（库无法替宿主补）。
 8. **开屏视图默认尺寸对齐**：不传 width/height → 全屏（iOS `showSplashViewInRootViewController`；Android 挂 `android.R.id.content`），传了 → 按区域（iOS 顶部区域 / Android 内嵌容器）。

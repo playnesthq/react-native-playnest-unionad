@@ -1,6 +1,22 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!--
+      穿山甲「可选」权限：防作弊 + 提升广告填充/定向，不加广告也能正常展示。
+      是否启用由 App 自行权衡（变现 vs 隐私/商店审核），按需取消注释。
+      详见 README「可选权限」一节。
+      <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+      <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+      <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+      <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+      <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+      <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+      <uses-permission android:name="android.permission.GET_TASKS" />
+      QUERY_ALL_PACKAGES：Google Play 严格管控，需申报用途并在隐私政策声明，慎用
+      <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+    -->
 
     <application
       android:name=".MainApplication"
@@ -8,6 +24,7 @@
       android:icon="@mipmap/ic_launcher"
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
+      tools:replace="android:allowBackup"
       android:theme="@style/AppTheme"
       android:usesCleartextTraffic="${usesCleartextTraffic}"
       android:supportsRtl="true">

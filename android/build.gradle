@@ -57,8 +57,10 @@ android {
 dependencies {
   implementation "com.facebook.react:react-android"
   implementation "androidx.appcompat:appcompat:1.6.1"
-  // 穿山甲融合SDK(GroMore)。官方 maven 版本，等价于本地 open_ad_sdk_7.6.1.1 aar。
-  // 只接入穿山甲广告只需此包；如需聚合三方 ADN(GDT/Baidu/KS/Sigmob)，接入方在 app 侧另加对应 adapter。
+  // 穿山甲融合SDK(mediation-sdk / open_ad_sdk，与 flutter_unionad 同款)：使用穿山甲广告位即可。
+  // 官方 maven 版本，等价于本地 open_ad_sdk_7.6.1.1 aar。
+  // 注意：不要换成 com.pangle.cn:ads-sdk-pro（不兼容，穿山甲广告位会报 40006）。
+  // GroMore 多 ADN 聚合(GDT/Baidu/KS/Sigmob)为可选超集，需接入方在 app 侧另加对应 adapter。
   implementation "com.pangle_beta.cn:mediation-sdk:7.6.1.1"
   // SDK 下载库依赖（官方接入须知要求）
   implementation "com.squareup.okhttp3:okhttp:3.12.1"
