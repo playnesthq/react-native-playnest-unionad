@@ -1,6 +1,6 @@
 {
   "name": "react-native-playnest-unionad",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "React Native 穿山甲(GroMore/UnionAD)广告插件：开屏/Banner/信息流原生/Draw信息流/激励视频/全屏视频插屏",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
@@ -19,7 +19,6 @@
     "ios",
     "cpp",
     "*.podspec",
-    "react-native.config.js",
     "NOTICE",
     "!ios/build",
     "!android/build",
