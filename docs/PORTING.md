@@ -6,9 +6,9 @@
 
 | | 版本 / 提交 |
 |---|---|
-| flutter_unionad 移植基线 | **v2.2.8**（commit `cb314bf`：android SDK 7.6.1.1 / ios SDK 7.6.0.4） |
-| 本库对应 SDK（iOS） | `Ads-CN-Beta/BUAdSDK` + `Ads-CN-Beta/CSJMediation-Only` **7.6.0.4** |
-| 本库对应 SDK（Android） | `com.pangle_beta.cn:mediation-sdk` **7.6.1.1**（穿山甲**融合SDK**的 maven 版本，即本地 `open_ad_sdk` aar，与 flutter_unionad 同款；使用**穿山甲广告位**） |
+| flutter_unionad 移植基线 | **v2.2.9**（commit `eb0383b`：android SDK 7.7.1.6 / ios SDK 7.8.0.0；相较 2.2.8 为纯 SDK 升版，无源码改动） |
+| 本库对应 SDK（iOS） | `Ads-CN-Beta/BUAdSDK` + `Ads-CN-Beta/CSJMediation-Only` **7.8.0.0** |
+| 本库对应 SDK（Android） | `com.pangle_beta.cn:mediation-sdk` **7.7.1.6**（穿山甲**融合SDK**的 maven 版本，即本地 `open_ad_sdk` aar，与 flutter_unionad 同款；使用**穿山甲广告位**） |
 
 > **SDK 说明**（实测 aar 包名 `com.bytedance.gromore`，内含 `com.bytedance.msdk`+`com.bytedance.sdk.openadsdk`）：
 > - `com.pangle_beta.cn:mediation-sdk`（=`open_ad_sdk`）是穿山甲**融合SDK**，把穿山甲广告与聚合能力打包在一起。**直接用穿山甲广告位即可**（flutter_unionad 多年如此），GroMore 多 ADN 聚合是可选超集。

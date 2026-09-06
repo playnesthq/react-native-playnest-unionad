@@ -45,7 +45,7 @@ yarn add react-native-playnest-unionad
 
 ### 1. Pod 依赖
 
-穿山甲 SDK 通过 CocoaPods 引入（`Ads-CN-Beta/BUAdSDK` + `Ads-CN-Beta/CSJMediation-Only` 7.6.0.4，随本库 podspec 自动带入），来自 CocoaPods 官方 CDN，通常无需额外 source。安装：
+穿山甲 SDK 通过 CocoaPods 引入（`Ads-CN-Beta/BUAdSDK` + `Ads-CN-Beta/CSJMediation-Only` 7.8.0.0，随本库 podspec 自动带入），来自 CocoaPods 官方 CDN，通常无需额外 source。安装：
 
 ```sh
 cd ios && pod install
@@ -70,7 +70,7 @@ source 'https://cdn.cocoapods.org/'
 
 ### 3. arm64 模拟器
 
-本库 podspec **未锁定** `x86_64`，`Ads-CN-Beta` 7.6.0.4 自带 `arm64_x86_64-simulator` 切片，可在 Apple Silicon 上直接跑 arm64 模拟器调试广告（免真机、免签名）。
+本库 podspec **未锁定** `x86_64`，`Ads-CN-Beta` 自带 `arm64_x86_64-simulator` 切片，可在 Apple Silicon 上直接跑 arm64 模拟器调试广告（免真机、免签名）。
 
 ### 4. 最低系统版本
 
@@ -178,7 +178,7 @@ async function initAd() {
 ```tsx
 import { getSDKVersion, getThemeStatus } from 'react-native-playnest-unionad';
 
-const version = await getSDKVersion();       // 例如 "7.6.1.1"
+const version = await getSDKVersion();       // 例如 "7.7.1.6"
 const theme = await getThemeStatus();        // 0 日间 / 1 夜间
 ```
 
