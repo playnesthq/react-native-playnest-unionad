@@ -1,0 +1,51 @@
+name: Publish to npm
+
+# 在 GitHub 上「发布 Release」(打 v* tag)时自动发 npm；也可手动触发。
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # npm provenance（溯源）所需
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      # Release 触发时，校验 package.json 版本号与 Release 的 tag(去掉 v 前缀)一致，
+      # 避免误发错版本。手动触发(workflow_dispatch)时跳过该校验。
+      - name: Verify version matches tag
+        if: github.event_name == 'release'
+        run: |
+          PKG_VERSION="$(node -p "require('./package.json').version")"
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          echo "package.json = $PKG_VERSION, tag = $TAG_VERSION"
+          if [ "$PKG_VERSION" != "$TAG_VERSION" ]; then
+            echo "::error::package.json 版本($PKG_VERSION) 与 Release tag($TAG_VERSION) 不一致，已中止发布。"
+            exit 1
+          fi
+
+      - name: Build package
+        run: yarn prepare
+
+      # 已在上一步构建，故 --ignore-scripts 跳过 prepare 避免重复构建。
+      # --provenance 生成溯源证明(需 id-token: write + 公开仓库)；--access public 用于公开发布。
+      - name: Publish to npm
+        run: npm publish --ignore-scripts --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
