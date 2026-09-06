@@ -168,10 +168,37 @@ async function initAd() {
       limitProgrammaticAds: false,    //   是否限制程序化广告，默认 false
       forbiddenCAID: false,           //   是否禁止 IDFA/CAID，默认 false
     },
+    // 选填：Android 隐私信息控制（仅 Android；不传则用 SDK 默认，传了才注入 TTCustomController）
+    androidPrivacy: {
+      isCanUseLocation: false,        //   是否允许 SDK 主动使用地理位置，默认 false
+      lat: 0, lon: 0,                 //   isCanUseLocation=false 时可传入经纬度
+      isCanUsePhoneState: false,      //   是否允许使用手机硬件参数(imei)，默认 false
+      imei: '',
+      isCanUseWifiState: false, macAddress: '',
+      isCanUseWriteExternal: false,
+      oaid: '',
+      alist: false,                   //   是否允许采集应用安装列表，默认 false
+      isCanUseAndroidId: false, androidId: '',
+      isCanUsePermissionRecordAudio: false,
+      isLimitPersonalAds: false,      //   是否限制个性化推荐，默认 false
+      isProgrammaticRecommend: false, //   是否启用程序化广告推荐，默认 false
+      userPrivacyConfig: {},
+    },
+    // 选填：流量分组（iOS + Android 均生效；不传则不下发 Segment）
+    userInfo: {
+      userId: '',                     //   设备 ID(开发者自定义)
+      age: 0,
+      gender: UnionadGender.UNSET,    //   0 女 /1 男 /2 未知 /3 不使用
+      channel: '', subChannel: '',
+      userValueGroup: '',             //   分组
+      customInfos: {},                //   自定义参数 Record<string,string>
+    },
   });
   console.log('穿山甲初始化', ok ? '成功' : '失败');
 }
 ```
+
+> `androidPrivacy` 每个字段都是可选的，只需写你要控制的项；不传 `androidPrivacy` 则完全用 SDK 默认行为。`userInfo` 同理。导入 `UnionadGender` 使用性别常量。
 
 ## 二、SDK 版本 / 主题模式
 

@@ -29,6 +29,8 @@ class PlaynestUnionadModule(reactContext: ReactApplicationContext) :
         debug = config.optBooleanOr("debug", false),
         supportMultiProcess = config.optBooleanOr("supportMultiProcess", false),
         themeStatus = config.optIntOr("themeStatus", 0),
+        androidPrivacy = if (config.hasKey("androidPrivacy") && !config.isNull("androidPrivacy")) config.getMap("androidPrivacy") else null,
+        userInfo = if (config.hasKey("userInfo") && !config.isNull("userInfo")) config.getMap("userInfo") else null,
         callback = object : TTAdSdk.Callback {
           override fun success() {
             promise.resolve(true)

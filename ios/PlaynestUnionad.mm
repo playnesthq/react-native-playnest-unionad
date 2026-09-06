@@ -101,6 +101,28 @@ static NSString *PU_ecpmJSON(id ritInfo) {
         configuration.mediation.limitProgrammaticAds = @([iosPrivacy[@"limitProgrammaticAds"] boolValue]);
         configuration.mediation.forbiddenIDFA = @([iosPrivacy[@"forbiddenCAID"] boolValue]);
     }
+    // 流量分组（聚合维度，iOS + Android 均生效）——仅在传入 userInfo 时下发
+    NSDictionary *userInfo = config[@"userInfo"];
+    if ([userInfo isKindOfClass:[NSDictionary class]]) {
+        BUMUserInfoForSegment *segment = [[BUMUserInfoForSegment alloc] init];
+        segment.user_id = userInfo[@"userId"];
+        segment.age = [userInfo[@"age"] integerValue];
+        NSInteger gender = [userInfo[@"gender"] integerValue];
+        if (gender == 0) {
+            segment.gender = BUUserInfoGenderFemale;
+        } else if (gender == 1) {
+            segment.gender = BUUserInfoGenderMale;
+        } else if (gender == 2) {
+            segment.gender = BUUserInfoGenderUnknown;
+        } else {
+            segment.gender = BUUserInfoGenderUnSet;
+        }
+        segment.channel = userInfo[@"channel"];
+        segment.sub_channel = userInfo[@"subChannel"];
+        segment.user_value_group = userInfo[@"userValueGroup"];
+        segment.customized_id = userInfo[@"customInfos"];
+        configuration.mediation.userInfoForSegment = segment;
+    }
     [BUAdSDKManager startWithAsyncCompletionHandler:^(BOOL success, NSError * _Nullable error) {
         resolve(@(success));
     }];

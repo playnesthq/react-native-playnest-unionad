@@ -128,6 +128,8 @@ Flutter 与 RN 的差别只在**桥接层**；穿山甲 SDK 的调用逻辑（lo
 
 ## 未尽事项（相对 flutter_unionad 尚未全量移植）
 
-- 完整的 `userInfo` 流量分组 / 隐私分段配置（当前 iOS 仅 `IOSPrivacy` 的 limitPersonalAds/limitProgrammaticAds/forbiddenCAID，Android 隐私配置最小化）。
+- ✅ **已实现**：`androidPrivacy`（Android TTCustomController 全字段）+ `userInfo` 流量分组（iOS `BUMUserInfoForSegment` + Android `MediationConfigUserInfoForSegment`）。均"传了才应用"，不传保持 SDK 默认。
+- 仍缺的 register 项：`directDownloadNetworkType`（指定网络直接下载）、`useTextureView`、`localConfig`（本地配置文件）。
+- 仍缺的视图广告参数：`downloadType`（下载弹窗类型）、`adLoadType`（预加载/实时）、banner 的 `supportDeepLink`/`expressAdNum`/`expressTime`/`isUserInteractionEnabled`、splash 的 `hideSkip`；`onTimeOut` 回调。均为次要项，按需再补。
 - 部分平台专属参数在另一端不生效（见 README「平台差异」表）：`orientation`、开屏 `timeout` / `supportDeepLink` 等。
 - 信息流「自渲染」广告未支持（与 flutter 一致，仅模板渲染）。

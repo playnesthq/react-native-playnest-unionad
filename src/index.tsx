@@ -39,7 +39,42 @@ export interface UnionadConfig {
   themeStatus?: number;
   /** iOS 隐私合规配置 */
   iosPrivacy?: IOSPrivacy;
+  /** Android 隐私信息控制配置（仅 Android；不传则用 SDK 默认） */
+  androidPrivacy?: AndroidPrivacy;
+  /** 流量分组参数（聚合维度，iOS + Android；不传则不下发 Segment） */
+  userInfo?: UnionadUserInfo;
 }
+
+/** AndroidPrivacy 各字段默认值（对齐 flutter_unionad toMap） */
+const ANDROID_PRIVACY_DEFAULTS: Required<AndroidPrivacy> = {
+  isCanUseLocation: false,
+  lat: 0,
+  lon: 0,
+  isCanUsePhoneState: false,
+  imei: '',
+  isCanUseWifiState: false,
+  macAddress: '',
+  isCanUseWriteExternal: false,
+  oaid: '',
+  alist: false,
+  isCanUseAndroidId: false,
+  androidId: '',
+  isCanUsePermissionRecordAudio: false,
+  isLimitPersonalAds: false,
+  isProgrammaticRecommend: false,
+  userPrivacyConfig: {},
+};
+
+/** UnionadUserInfo 各字段默认值（对齐 flutter_unionad toMap） */
+const USER_INFO_DEFAULTS: Required<UnionadUserInfo> = {
+  userId: '',
+  age: 0,
+  gender: 3, // UnionadGender.UNSET（此处用字面量避免前向引用）
+  channel: '',
+  subChannel: '',
+  userValueGroup: '',
+  customInfos: {},
+};
 
 /** iOS 隐私合规配置（聚合维度） */
 export interface IOSPrivacy {
@@ -49,6 +84,76 @@ export interface IOSPrivacy {
   limitProgrammaticAds?: boolean;
   /** 是否禁止 IDFA/CAID，默认 false */
   forbiddenCAID?: boolean;
+}
+
+/**
+ * Android 隐私信息控制配置（仅 Android 生效）。
+ * 仅当传入 `androidPrivacy` 时才会应用 TTCustomController；不传则用 SDK 默认行为。
+ * 未显式设置的字段按下述默认值下发。
+ */
+export interface AndroidPrivacy {
+  /** 是否允许 SDK 主动使用地理位置信息，默认 false */
+  isCanUseLocation?: boolean;
+  /** isCanUseLocation=false 时可传入的纬度，默认 0 */
+  lat?: number;
+  /** isCanUseLocation=false 时可传入的经度，默认 0 */
+  lon?: number;
+  /** 是否允许 SDK 主动使用手机硬件参数(如 imei)，默认 false */
+  isCanUsePhoneState?: boolean;
+  /** isCanUsePhoneState=false 时可传入的 imei，默认 "" */
+  imei?: string;
+  /** 是否允许 SDK 主动使用 ACCESS_WIFI_STATE 权限，默认 false */
+  isCanUseWifiState?: boolean;
+  /** isCanUseWifiState=false 时可传入的 Mac 地址，默认 "" */
+  macAddress?: string;
+  /** 是否允许 SDK 主动使用 WRITE_EXTERNAL_STORAGE 权限，默认 false */
+  isCanUseWriteExternal?: boolean;
+  /** 开发者可传入的 oaid，默认 "" */
+  oaid?: string;
+  /** 是否允许 SDK 主动获取设备应用安装列表，默认 false */
+  alist?: boolean;
+  /** 是否能获取 android id，默认 false */
+  isCanUseAndroidId?: boolean;
+  /** 开发者可传入的 android id，默认 "" */
+  androidId?: string;
+  /** 是否允许 SDK 在已授权情况下使用录音权限，默认 false */
+  isCanUsePermissionRecordAudio?: boolean;
+  /** 是否限制个性化推荐接口，默认 false */
+  isLimitPersonalAds?: boolean;
+  /** 是否启用程序化广告推荐，默认 false */
+  isProgrammaticRecommend?: boolean;
+  /** 自定义隐私配置，默认 {} */
+  userPrivacyConfig?: Record<string, unknown>;
+}
+
+/** 性别（userInfo.gender） */
+export const UnionadGender = {
+  FEMALE: 0,
+  MALE: 1,
+  UNKNOWN: 2,
+  /** 不使用 */
+  UNSET: 3,
+} as const;
+
+/**
+ * 流量分组参数（聚合维度，iOS + Android 均生效）。
+ * 仅当传入 `userInfo` 时才会下发 Segment。
+ */
+export interface UnionadUserInfo {
+  /** 设备 ID（开发者自定义，用于分组统计/测试），默认 "" */
+  userId?: string;
+  /** 年龄，默认 0 */
+  age?: number;
+  /** 性别，见 UnionadGender：0 女 / 1 男 / 2 未知 / 3 不使用，默认 3 */
+  gender?: number;
+  /** 渠道，建议 [A-Za-z0-9_]，默认 "" */
+  channel?: string;
+  /** 子渠道，建议 [A-Za-z0-9_]，默认 "" */
+  subChannel?: string;
+  /** 分组，默认 "" */
+  userValueGroup?: string;
+  /** 自定义参数，默认 {} */
+  customInfos?: Record<string, string>;
 }
 
 /** 权限状态码（iOS ATT） */
@@ -68,7 +173,7 @@ export const UnionadPermission = {
  * @returns 是否初始化成功
  */
 export function register(config: UnionadConfig): Promise<boolean> {
-  return PlaynestUnionad.register({
+  const payload: Record<string, unknown> = {
     appName: '',
     useMediation: true,
     paid: false,
@@ -84,7 +189,23 @@ export function register(config: UnionadConfig): Promise<boolean> {
       forbiddenCAID: false,
       ...config.iosPrivacy,
     },
-  });
+  };
+  // androidPrivacy / userInfo 仅在显式传入时下发（填齐默认字段，避免原生读取缺键）。
+  // 不传则保持 SDK 默认行为，不注入 TTCustomController / Segment。
+  if (config.androidPrivacy) {
+    payload.androidPrivacy = {
+      ...ANDROID_PRIVACY_DEFAULTS,
+      ...config.androidPrivacy,
+    };
+  } else {
+    delete payload.androidPrivacy;
+  }
+  if (config.userInfo) {
+    payload.userInfo = { ...USER_INFO_DEFAULTS, ...config.userInfo };
+  } else {
+    delete payload.userInfo;
+  }
+  return PlaynestUnionad.register(payload);
 }
 
 /** 获取穿山甲 SDK 版本号 */

@@ -18,6 +18,7 @@ import {
 } from 'react-native';
 import {
   register,
+  UnionadGender,
   getSDKVersion,
   getThemeStatus,
   requestPermissionIfNecessary,
@@ -56,6 +57,22 @@ export default function App() {
         iosAppId: APP_ID,
         appName: 'PlaynestUnionadExample',
         debug: true,
+        // Android 隐私控制（仅 Android；不传则用 SDK 默认）
+        androidPrivacy: {
+          isCanUseLocation: true,
+          isCanUsePhoneState: true,
+          isLimitPersonalAds: false,
+          isProgrammaticRecommend: true,
+        },
+        // 流量分组（iOS + Android 均生效）
+        userInfo: {
+          userId: 'demo_user_001',
+          age: 24,
+          gender: UnionadGender.MALE,
+          channel: 'appstore',
+          userValueGroup: 'high',
+          customInfos: { vip: '1' },
+        },
       });
       append(`register -> ${ok ? '成功' : '失败'}`);
     } catch (e) {
