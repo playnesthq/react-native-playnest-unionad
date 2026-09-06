@@ -319,7 +319,10 @@ function ensureAdEventSub() {
 }
 
 /** 为某个 adType 注册/替换事件处理器，返回取消函数。 */
-function setAdEventHandler(adType: string, handler: AdEventHandler): () => void {
+function setAdEventHandler(
+  adType: string,
+  handler: AdEventHandler
+): () => void {
   ensureAdEventSub();
   adEventHandlers[adType] = handler;
   return () => {

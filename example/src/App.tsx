@@ -187,7 +187,9 @@ export default function App() {
         <Section title="开屏">
           <Button title="开屏广告（方法式全屏）" onPress={onSplash} />
           <Button
-            title={showSplashView ? '隐藏开屏视图版' : '开屏视图版（不传尺寸=全屏）'}
+            title={
+              showSplashView ? '隐藏开屏视图版' : '开屏视图版（不传尺寸=全屏）'
+            }
             onPress={() => setShowSplashView((v) => !v)}
           />
         </Section>
@@ -209,7 +211,9 @@ export default function App() {
               append(`开屏视图: onFail ${e.error}`);
               setShowSplashView(false);
             }}
-            onEcpm={(info) => append(`开屏视图: onEcpm ${JSON.stringify(info)}`)}
+            onEcpm={(info) =>
+              append(`开屏视图: onEcpm ${JSON.stringify(info)}`)
+            }
           />
         )}
 
@@ -291,13 +295,7 @@ export default function App() {
   );
 }
 
-function Section({
-  title,
-  children,
-}: {
-  title: string;
-  children: ReactNode;
-}) {
+function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>{title}</Text>
