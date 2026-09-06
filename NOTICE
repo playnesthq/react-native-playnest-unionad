@@ -1,0 +1,28 @@
+react-native-playnest-unionad
+Copyright 2026 playnest
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+--------------------------------------------------------------------------------
+
+This product is a React Native port derived from:
+
+  flutter_unionad
+  https://github.com/gstory0404/flutter_unionad
+  Copyright gstory (gstory0404@gmail.com)
+  Licensed under the Apache License, Version 2.0.
+
+Significant changes from the original work:
+  - Reimplemented the platform bridge for React Native New Architecture
+    (Flutter MethodChannel/EventChannel/PlatformView -> TurboModule /
+    codegen EventEmitter / Fabric components).
+  - New package/namespace and API surface (com.playnestunionad /
+    PlaynestUnionad); no original gstory/flutter_unionad identifiers reused.
+
+The underlying 穿山甲 (Pangle / GroMore) SDK is a product of Beijing Bytedance
+Technology Co., Ltd. and is subject to its own license terms; it is not
+covered by this project's license.

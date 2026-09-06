@@ -507,4 +507,6 @@ interface EcpmInfo {
 
 ## 许可证
 
-MIT · playnest
+**Apache License 2.0** · playnest
+
+本项目移植自 [flutter_unionad](https://github.com/gstory0404/flutter_unionad)（Apache-2.0），衍生说明见 [NOTICE](NOTICE)。

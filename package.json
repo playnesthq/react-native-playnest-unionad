@@ -20,6 +20,7 @@
     "cpp",
     "*.podspec",
     "react-native.config.js",
+    "NOTICE",
     "!ios/build",
     "!android/build",
     "!android/gradle",
@@ -45,14 +46,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/playnest/react-native-playnest-unionad.git"
+    "url": "git+https://github.com/playnesthq/react-native-playnest-unionad.git"
   },
-  "author": "playnest <dev@tiaotv.com> (https://tiaotv.com)",
-  "license": "MIT",
+  "author": "playnest <zhuzeqi2013@gmail.com> (https://github.com/playnesthq)",
+  "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/playnest/react-native-playnest-unionad/issues"
+    "url": "https://github.com/playnesthq/react-native-playnest-unionad/issues"
   },
-  "homepage": "https://github.com/playnest/react-native-playnest-unionad#readme",
+  "homepage": "https://github.com/playnesthq/react-native-playnest-unionad#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
