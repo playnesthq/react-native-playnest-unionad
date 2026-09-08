@@ -531,10 +531,10 @@ interface EcpmInfo {
 
 本库封装的是穿山甲官方 SDK。RN 侧的调用方式见上文；广告位类型、eCPM 字段、错误码、后台配置等**平台/SDK 细节**可查穿山甲官方文档:
 
-- 穿山甲官方接入文档（Android）: <https://www.csjplatform.com/union/media/union/download/detail?id=147&osType=android&locale=zh-CN>
-- 穿山甲官方接入文档（iOS）: <https://www.csjplatform.com/union/media/union/download/detail?id=148&osType=ios&locale=zh-CN>
+- 穿山甲官方接入文档（Android）: <https://www.csjplatform.com/union/media/union/download/detail?id=224&docId=27562&locale=zh-CN&osType=android>
+- 穿山甲官方接入文档（iOS）: <https://www.csjplatform.com/union/media/union/download/detail?id=225&docId=27487&locale=zh-CN&osType=ios>
 - 穿山甲媒体平台（创建应用 / 广告位、GroMore 聚合后台）: <https://www.csjplatform.com/>
-- 穿山甲帮助中心 / 常见问题: <https://www.csjplatform.com/supportcenter/5885>
+- 穿山甲帮助中心 / 常见问题: <https://www.csjplatform.com/supportcenter/5415>
 - 上游 Flutter 插件 flutter_unionad（本库移植来源）: <https://github.com/gstory0404/flutter_unionad>
 
 > 本库用的是**融合SDK（`mediation-sdk` / `open_ad_sdk`）**，对应穿山甲后台的广告位;正式广告位需在穿山甲媒体平台创建。
