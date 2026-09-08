@@ -68,11 +68,25 @@ source 'https://cdn.cocoapods.org/'
 
 即使你不主动调用 ATT，也建议配置以便合规。
 
-### 3. arm64 模拟器
+### 3. Info.plist：允许 HTTP 素材（ATS，建议）
+
+穿山甲部分广告素材/落地页可能走 HTTP，iOS 的 ATS 默认禁止明文请求，不放开可能导致部分素材加载不全。建议在 `Info.plist` 加 ATS 例外：
+
+```xml
+<key>NSAppTransportSecurity</key>
+<dict>
+  <key>NSAllowsArbitraryLoads</key>
+  <true/>
+</dict>
+```
+
+> ⚠️ `NSAllowsArbitraryLoads=true` 是全局放开,App Store 审核可能要求说明理由。若担心审核,可改用更精细的 `NSExceptionDomains` 只对穿山甲相关域名放行(见穿山甲官方 iOS 文档的域名清单)。基本的广告展示不加也能跑(主素材是 HTTPS),但为完整加载建议配置。
+
+### 4. arm64 模拟器
 
 本库 podspec **未锁定** `x86_64`，`Ads-CN-Beta` 自带 `arm64_x86_64-simulator` 切片，可在 Apple Silicon 上直接跑 arm64 模拟器调试广告（免真机、免签名）。
 
-### 4. 最低系统版本
+### 5. 最低系统版本
 
 `Podfile` 里 `platform :ios, '12.0'`（或更高）。
 
@@ -99,14 +113,22 @@ allprojects {
 
 在 `android/build.gradle` 确认 `minSdkVersion` ≥ 24。若你的工程低于 24，参考穿山甲官方的 `tools:overrideLibrary` 方案。
 
-### 3. `allowBackup` 冲突（如报清单合并错误再配）
+### 3. AndroidManifest 的 `<application>` 配置
 
-若 SDK 的 `android:allowBackup=true` 与你 App 的清单冲突，在 `android/app/src/main/AndroidManifest.xml` 的 `<application>` 上加：
+在 `android/app/src/main/AndroidManifest.xml` 的 `<application>` 上：
+
+- **允许 HTTP 素材（建议）**：穿山甲部分广告素材/落地页走 HTTP，Android 9+ 默认禁明文，不开可能导致部分素材加载不全 → 加 `android:usesCleartextTraffic="true"`。
+- **`allowBackup` 冲突（如报清单合并错误再配）**：若 SDK 的 `android:allowBackup=true` 与你 App 冲突 → 加 `tools:replace="android:allowBackup"`。
 
 ```xml
 <manifest xmlns:tools="http://schemas.android.com/tools" ...>
-    <application tools:replace="android:allowBackup" ...>
+    <application
+        android:usesCleartextTraffic="true"
+        tools:replace="android:allowBackup"
+        ...>
 ```
+
+> 基本广告展示不加 `usesCleartextTraffic` 也能跑（主素材是 HTTPS），但为完整加载素材建议开启。若你已用 `network_security_config` 精细管控明文，也可在其中只放行穿山甲域名。
 
 ### 4. CPU 架构 / 模拟器
 
