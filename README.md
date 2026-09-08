@@ -63,7 +63,7 @@ source 'https://cdn.cocoapods.org/'
 
 ```xml
 <key>NSUserTrackingUsageDescription</key>
-<string>用于向您展示更相关的广告</string>
+<string>用于向您展示个性化广告</string>
 ```
 
 即使你不主动调用 ATT，也建议配置以便合规。
@@ -520,6 +520,20 @@ interface EcpmInfo {
 - **只出现无填充** → 模拟器 / 测试位特性，换真机或正式广告位。
 
 完整可运行示例见 [example/src/App.tsx](example/src/App.tsx)。
+
+---
+
+## 官方文档与参考
+
+本库封装的是穿山甲官方 SDK。RN 侧的调用方式见上文；广告位类型、eCPM 字段、错误码、后台配置等**平台/SDK 细节**可查穿山甲官方文档:
+
+- 穿山甲官方接入文档（Android）: <https://www.csjplatform.com/union/media/union/download/detail?id=147&osType=android&locale=zh-CN>
+- 穿山甲官方接入文档（iOS）: <https://www.csjplatform.com/union/media/union/download/detail?id=148&osType=ios&locale=zh-CN>
+- 穿山甲媒体平台（创建应用 / 广告位、GroMore 聚合后台）: <https://www.csjplatform.com/>
+- 穿山甲帮助中心 / 常见问题: <https://www.csjplatform.com/supportcenter/5885>
+- 上游 Flutter 插件 flutter_unionad（本库移植来源）: <https://github.com/gstory0404/flutter_unionad>
+
+> 本库用的是**融合SDK（`mediation-sdk` / `open_ad_sdk`）**，对应穿山甲后台的广告位;正式广告位需在穿山甲媒体平台创建。
 
 ---
 
