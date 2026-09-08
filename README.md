@@ -24,7 +24,7 @@ React Native 穿山甲(UnionAD)广告插件。完整移植自 Flutter 插件 [fl
 | React Native | **0.87.0+**，且 **newArchEnabled = true** |
 | iOS | **iOS 12.0+**（ATT 需 iOS 14+）。SDK 支持 arm64 真机与 **arm64 模拟器**（Apple Silicon） |
 | Android | **minSdkVersion 24（Android 7.0）**。穿山甲 68 版本起强制 minSdk 24 |
-| Android CPU 架构 | **仅 arm64-v8a / armeabi-v7a**。SDK 不含 x86/x86_64，普通 Intel 模拟器无法加载；需真机或 **arm64 模拟器** |
+| Android CPU 架构 | SDK 原生库**仅 arm64-v8a / armeabi-v7a**（无 x86/x86_64）。建议真机或 **arm64 模拟器**；x86 模拟器需 ARM 转译且对广告 SDK 不稳定 |
 | Java | 编译需 **JDK 17+** |
 
 ---
@@ -132,7 +132,11 @@ allprojects {
 
 ### 4. CPU 架构 / 模拟器
 
-穿山甲原生库只含 `arm64-v8a` / `armeabi-v7a`。**Intel 模拟器无法加载**，请用真机或 **arm64 模拟器**（Apple Silicon 上的 Android Studio 模拟器即为 arm64）。可选：在 app `build.gradle` 用 `abiFilters 'arm64-v8a'` 精简包体。
+穿山甲 SDK 原生库**只含 `arm64-v8a` / `armeabi-v7a`，不含 x86/x86_64**（已确认）。因此:
+
+- **真机 / arm64 模拟器**（Apple Silicon Mac 上的 arm64 系统镜像）：正常运行,**已实测可用**。
+- **x86 / x86_64 模拟器**：无对应 `.so`。不带 ARM 转译的镜像会 `UnsatisfiedLinkError` 加载失败;较新的 x86_64 系统镜像自带 ARM 转译，理论上可能运行，但广告 SDK 含渲染/防作弊 native 代码，转译下常不稳定，**不建议依赖**。
+- **建议**：用真机或 **arm64 模拟器**测试。可选在 app `build.gradle` 用 `abiFilters 'arm64-v8a'` 精简包体。
 
 ### 5. 可选权限（按需自取，默认不加）
 
