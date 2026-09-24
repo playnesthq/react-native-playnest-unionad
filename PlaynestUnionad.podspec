@@ -19,9 +19,9 @@ Pod::Spec.new do |s|
   # ATT 广告跟踪授权
   s.frameworks = "AppTrackingTransparency"
 
-  # 穿山甲(Pangle) SDK 7.8.0.0（与 flutter_unionad 2.2.9 对齐）
-  s.dependency "Ads-CN-Beta/BUAdSDK", "7.8.0.0"
-  s.dependency "Ads-CN-Beta/CSJMediation-Only", "7.8.0.0"
+  # 穿山甲(Pangle) SDK 7.8.0.5（与 flutter_unionad 3.0.0 对齐）
+  s.dependency "Ads-CN-Beta/BUAdSDK", "7.8.0.5"
+  s.dependency "Ads-CN-Beta/CSJMediation-Only", "7.8.0.5"
 
   # Ads-CN-Beta 提供 arm64 模拟器切片，无需再锁 x86_64，
   # 从而支持 Apple Silicon 上的 arm64 模拟器原生调试。

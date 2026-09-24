@@ -6,9 +6,11 @@
 
 | | 版本 / 提交 |
 |---|---|
-| flutter_unionad 移植基线 | **v2.2.9**（commit `eb0383b`：android SDK 7.7.1.6 / ios SDK 7.8.0.0；相较 2.2.8 为纯 SDK 升版，无源码改动） |
-| 本库对应 SDK（iOS） | `Ads-CN-Beta/BUAdSDK` + `Ads-CN-Beta/CSJMediation-Only` **7.8.0.0** |
-| 本库对应 SDK（Android） | `com.pangle_beta.cn:mediation-sdk` **7.7.1.6**（穿山甲**融合SDK**的 maven 版本，即本地 `open_ad_sdk` aar，与 flutter_unionad 同款；使用**穿山甲广告位**） |
+| flutter_unionad 移植基线 | **v3.0.0**（commit `2a2373e`：android SDK 7.8.1.4 / ios SDK 7.8.0.5） |
+| 本库对应 SDK（iOS） | `Ads-CN-Beta/BUAdSDK` + `Ads-CN-Beta/CSJMediation-Only` **7.8.0.5** |
+| 本库对应 SDK（Android） | `com.pangle_beta.cn:mediation-sdk` **7.8.1.4**（穿山甲**融合SDK**的 maven 版本，即本地 `open_ad_sdk` aar，与 flutter_unionad 同款；使用**穿山甲广告位**） |
+
+> **关于 flutter_unionad 3.0.0（federated 重构）**：3.0.0 把插件拆成 `unionad_android`/`unionad_ios`/`unionad_ohos`/`unionad_interface` 分包，并把 API 从 `androidAppId`+`iosAppId`→`appId`、`androidCodeId`+`iosCodeId`→`codeId`（federated 在 Dart 层已定平台）。**本库不采纳这两项**：RN 一份 JS 同时跑双端，必须保留 `androidXxx`/`iosXxx` 双 id；federated 分包是 Flutter 打包概念，与 RN 无关。3.0.0 对本库唯一有意义的改动是 **SDK 升版**，无新功能/新参数/新回调。
 
 > **SDK 说明**（实测 aar 包名 `com.bytedance.gromore`，内含 `com.bytedance.msdk`+`com.bytedance.sdk.openadsdk`）：
 > - `com.pangle_beta.cn:mediation-sdk`（=`open_ad_sdk`）是穿山甲**融合SDK**，把穿山甲广告与聚合能力打包在一起。**直接用穿山甲广告位即可**（flutter_unionad 多年如此），GroMore 多 ADN 聚合是可选超集。

@@ -1,6 +1,6 @@
 PODS:
-  - Ads-CN-Beta/BUAdSDK (7.8.0.0)
-  - Ads-CN-Beta/CSJMediation-Only (7.8.0.0):
+  - Ads-CN-Beta/BUAdSDK (7.8.0.5)
+  - Ads-CN-Beta/CSJMediation-Only (7.8.0.5):
     - Ads-CN-Beta/BUAdSDK
   - boost (1.84.0):
     - ReactNativeDependencies
@@ -17,9 +17,9 @@ PODS:
   - hermes-engine (250829098.0.16):
     - hermes-engine/Pre-built (= 250829098.0.16)
   - hermes-engine/Pre-built (250829098.0.16)
-  - PlaynestUnionad (0.1.0):
-    - Ads-CN-Beta/BUAdSDK (= 7.8.0.0)
-    - Ads-CN-Beta/CSJMediation-Only (= 7.8.0.0)
+  - PlaynestUnionad (1.0.1):
+    - Ads-CN-Beta/BUAdSDK (= 7.8.0.5)
+    - Ads-CN-Beta/CSJMediation-Only (= 7.8.0.5)
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -1905,7 +1905,7 @@ EXTERNAL SOURCES:
     :path: build/rncore-facades/Yoga
 
 SPEC CHECKSUMS:
-  Ads-CN-Beta: 46322f8851914dbcf611028cee861633c63f5983
+  Ads-CN-Beta: 3a6a494935b7b310103c190a3b4249f8461136b3
   boost: 8502bfdc46e2804408af2e163049ece181009af4
   DoubleConversion: 501a575c40c0b50c89685762dd3e415e6bb26fb0
   fast_float: 7c925d1cebf8328d4018d061f49377e9f887e3b4
@@ -1913,7 +1913,7 @@ SPEC CHECKSUMS:
   fmt: ba0886e864ebb21d14c98b2e12e164b8002f5b93
   glog: 3cf7cb46f743c4bc758ae3e6d9c15bd1b4cfd6d4
   hermes-engine: 6a26e94b4a974cbadc751eed9caa12624c38f226
-  PlaynestUnionad: ffcbafae44d2b8e25a0775a0d4d2e565d5498baa
+  PlaynestUnionad: 20c60eead3a2585188b6ad69369134a259d0deb5
   RCT-Folly: 82921e585c0400eda46fac1068297aa9dfb035e4
   RCTDeprecation: 6d66040b74f4be203495adda55b49c1a25190291
   RCTRequired: ebf172e0b04196922ba4640458f9926c1bb34012
