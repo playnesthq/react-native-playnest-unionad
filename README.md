@@ -5,6 +5,7 @@ React Native 穿山甲(UnionAD)广告插件。完整移植自 Flutter 插件 [fl
 | 类型 | API | iOS | Android |
 |---|---|---|---|
 | 初始化 / SDK 版本 / 主题 / ATT 权限 | `register` / `getSDKVersion` / `getThemeStatus` / `requestPermissionIfNecessary` | ✅ | ✅ |
+| 广告标识符（IDFA） | `getAdvertisingIdentifier` | ✅ | 返回 `''` |
 | 激励视频 | `loadRewardVideoAd` / `showRewardVideoAd` | ✅ | ✅ |
 | 全屏视频 / 插屏（二合一） | `loadFullScreenVideoAd` / `showFullScreenVideoAd` | ✅ | ✅ |
 | 开屏（方法式全屏） | `showSplashAd` | ✅ | ✅ |
@@ -253,6 +254,25 @@ if (status === UnionadPermission.authorized) {
   console.log('已授权广告跟踪');
 }
 ```
+
+### 获取广告标识符（IDFA，iOS）
+
+`getAdvertisingIdentifier()` 返回广告标识符:
+
+```tsx
+import {
+  requestPermissionIfNecessary,
+  getAdvertisingIdentifier,
+} from 'react-native-playnest-unionad';
+
+await requestPermissionIfNecessary();          // iOS 先请求 ATT 授权
+const idfa = await getAdvertisingIdentifier();
+// iOS：授权后返回 IDFA；未授权返回全零 00000000-0000-0000-0000-000000000000
+// Android：不支持，返回 ''
+```
+
+- **iOS**：返回 IDFA（`ASIdentifierManager`）。**需先 ATT 授权**，否则系统返回全零。访问 IDFA 需在 App Store 隐私清单声明。
+- **Android**：不支持，返回 `''`。如需 OAID，请自行接入 MSA OAID SDK，并通过 `register` 的 `androidPrivacy.oaid` 传入。
 
 ## 四、激励视频
 

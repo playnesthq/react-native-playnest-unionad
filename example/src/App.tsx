@@ -22,6 +22,7 @@ import {
   getSDKVersion,
   getThemeStatus,
   requestPermissionIfNecessary,
+  getAdvertisingIdentifier,
   loadRewardVideoAd,
   showRewardVideoAd,
   loadFullScreenVideoAd,
@@ -84,6 +85,8 @@ export default function App() {
   const onTheme = async () => append(`主题模式: ${await getThemeStatus()}`);
   const onPermission = async () =>
     append(`ATT 权限: ${await requestPermissionIfNecessary()}`);
+  const onIdfa = async () =>
+    append(`IDFA: ${(await getAdvertisingIdentifier()) || '(空)'}`);
 
   const onLoadReward = () => {
     append('激励视频: 开始加载…');
@@ -172,6 +175,7 @@ export default function App() {
           <Button title="2. 获取 SDK 版本" onPress={onVersion} />
           <Button title="3. 主题模式" onPress={onTheme} />
           <Button title="4. 请求 ATT 权限（iOS）" onPress={onPermission} />
+          <Button title="5. 获取 IDFA" onPress={onIdfa} />
         </Section>
 
         <Section title="激励视频">

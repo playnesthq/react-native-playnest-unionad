@@ -48,6 +48,12 @@ export interface Spec extends TurboModule {
   requestPermissionIfNecessary(): Promise<number>;
 
   /**
+   * 获取广告标识符。iOS：返回 IDFA（需先 ATT 授权，否则全零）。
+   * Android：不支持，返回空字符串。
+   */
+  getAdvertisingIdentifier(): Promise<string>;
+
+  /**
    * 预加载激励视频广告。全过程通过 onAdEvent 事件回调（adType=rewardAd）。
    * @param config 见 index.tsx 的 RewardVideoOptions
    */

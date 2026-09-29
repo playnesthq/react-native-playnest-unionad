@@ -16,8 +16,8 @@ Pod::Spec.new do |s|
   s.source_files = "ios/**/*.{h,m,mm,swift,cpp}"
   s.private_header_files = "ios/**/*.h"
 
-  # ATT 广告跟踪授权
-  s.frameworks = "AppTrackingTransparency"
+  # ATT 广告跟踪授权 + IDFA(AdSupport)
+  s.frameworks = "AppTrackingTransparency", "AdSupport"
 
   # 穿山甲(Pangle) SDK 7.8.0.5（与 flutter_unionad 3.0.0 对齐）
   s.dependency "Ads-CN-Beta/BUAdSDK", "7.8.0.5"

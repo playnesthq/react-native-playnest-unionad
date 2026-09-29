@@ -225,6 +225,17 @@ export function requestPermissionIfNecessary(): Promise<number> {
   return PlaynestUnionad.requestPermissionIfNecessary();
 }
 
+/**
+ * 获取广告标识符。
+ * - iOS：返回 IDFA（`ASIdentifierManager`）。需先 `requestPermissionIfNecessary()` 授权 ATT，
+ *   未授权时系统返回全零 `00000000-0000-0000-0000-000000000000`。
+ * - Android：不支持，返回空字符串 `''`（如需 OAID 请自行接入 MSA OAID SDK，并通过
+ *   `register` 的 `androidPrivacy.oaid` 传入）。
+ */
+export function getAdvertisingIdentifier(): Promise<string> {
+  return PlaynestUnionad.getAdvertisingIdentifier();
+}
+
 /* ============================ 激励视频 ============================ */
 
 /** eCPM 信息（聚合维度，部分字段依 ADN 而定） */

@@ -2,6 +2,7 @@
 #import <BUAdSDK/BUAdSDK.h>
 #import <UIKit/UIKit.h>
 #import <AppTrackingTransparency/AppTrackingTransparency.h>
+#import <AdSupport/AdSupport.h>
 
 #pragma mark - 获取当前可展示的 UIViewController
 
@@ -156,6 +157,14 @@ static NSString *PU_ecpmJSON(id ritInfo) {
     } else {
         resolve(@(3));
     }
+}
+
+- (void)getAdvertisingIdentifier:(RCTPromiseResolveBlock)resolve
+                          reject:(RCTPromiseRejectBlock)reject
+{
+    // 需先经 ATT 授权，未授权时系统返回全零 UUID。
+    NSString *idfa = [[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
+    resolve(idfa ?: @"");
 }
 
 #pragma mark 事件发送（统一 onAdEvent）

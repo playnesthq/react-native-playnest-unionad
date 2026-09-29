@@ -76,6 +76,12 @@ class PlaynestUnionadModule(reactContext: ReactApplicationContext) :
     }
   }
 
+  // Android 不支持获取广告标识符，返回空串。如需 OAID 请自行接入 MSA OAID SDK，
+  // 并通过 register 的 androidPrivacy.oaid 传入。
+  override fun getAdvertisingIdentifier(promise: Promise) {
+    promise.resolve("")
+  }
+
   override fun loadRewardVideoAd(config: ReadableMap, promise: Promise) {
     val activity = getCurrentActivity()
     if (activity == null) {
