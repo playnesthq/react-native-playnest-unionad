@@ -58,4 +58,4 @@ git switch main
 git pull github main
 ```
 
-功能性改动走 PR（进 Contributors）；纯收尾提交（改 CHANGELOG/版本号）可直接在 main 提交，不影响。`your-git-mirror`（origin）在发版后 `git push origin main && git push origin vX.Y.Z` 同步即可。
+功能性改动走 PR（进 Contributors）；纯收尾提交（改 CHANGELOG/版本号）可直接在 main 提交，不影响。若另配了内部镜像 remote，发版后 `git push <mirror> main && git push <mirror> vX.Y.Z` 同步即可。
