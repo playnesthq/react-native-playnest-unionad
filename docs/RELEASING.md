@@ -30,7 +30,16 @@ Release 里的 **“What's Changed”** 和 **“New Contributors”**（`* @use
 
 ### 一次性：建好 label（供 `.github/release.yml` 分区）
 
-在仓库 Labels 页建：`feature`、`bug`、`dependencies`、`documentation`（`enhancement`/`docs` GitHub 默认已有）。
+实际只需 4 个（`enhancement`/`bug`/`documentation` GitHub 默认已有，只需自建 `dependencies`）：
+
+| 用途 | Label | 分区 |
+|---|---|---|
+| 新功能 | `enhancement` | 🚀 New Features |
+| 修复 | `bug` | 🐛 Bug Fixes |
+| 依赖 / SDK 升版 | `dependencies` | 🔧 Changed / Dependencies |
+| 文档 | `documentation` | 📝 Documentation |
+
+`release.yml` 里还配了别名（`feature`/`fix`/`docs`/`changed`/`chore`），归到同一分区，可选，不建也不影响。
 
 ### 每次改动
 
@@ -48,8 +57,8 @@ git push -u github feat/xxx
 
 开 PR 并合并（二选一）：
 
-- **网页**：push 后点 “Compare & pull request” → 加 label（如 `feature`）→ Create → **Squash and merge** → Delete branch。
-- **gh CLI**（`brew install gh`）：`gh pr create --fill --label feature` → `gh pr merge --squash --delete-branch`。
+- **网页**：push 后点 “Compare & pull request” → 加 label（如 `enhancement`）→ Create → **Squash and merge** → Delete branch。
+- **gh CLI**（`brew install gh`）：`gh pr create --fill --label enhancement` → `gh pr merge --squash --delete-branch`。
 
 合并后：
 
