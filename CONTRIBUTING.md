@@ -99,3 +99,32 @@ When you're sending a pull request:
 - Review the documentation to make sure it looks good.
 - Follow the pull request template when opening a pull request.
 - For pull requests that change the API or implementation, discuss with maintainers first by opening an issue.
+
+## Release process（发版流程）
+
+发版由 **GitHub Release** 触发 Actions 自动发布到 npm（见 `.github/workflows/publish.yml`）。步骤：
+
+1. **更新 `CHANGELOG.md`**：把 `[Unreleased]` 下的改动移到新版本号标题下并补日期，底部加一行 compare 链接。按需分区 🚀 New Features / 🐛 Bug Fixes / 🔧 Changed / 📝 Docs。
+2. **升 `package.json` 的 `version`**（语义化版本：`patch` = 修复/依赖升级、`minor` = 新功能、`major` = 破坏性变更）。
+3. **提交并打 tag**：`git commit` → `git tag -a vX.Y.Z -m "vX.Y.Z"` → push 分支与 tag。
+4. **建 Release**：GitHub → Releases → *Draft a new release* → 选 tag `vX.Y.Z` → 填 **Release notes**（见下）→ Release label 选 *None*（正式版）→ *Publish release*。
+5. Publish 后 `Publish to npm` 工作流自动 `npm publish`，到 **Actions** 看绿勾确认；`npm view react-native-playnest-unionad version` 核对。
+
+### Release notes 怎么写
+
+两种方式，二选一或组合：
+
+- **粘贴 CHANGELOG（推荐，直接 push 到 main 的场景最稳）**：把 `CHANGELOG.md` 里该版本那一段复制进 Release notes。
+- **Generate release notes（需走 PR）**：点该按钮，GitHub 按 `.github/release.yml` 的分区规则自动生成 “What's Changed / Contributors / Full Changelog”。
+
+也可组合：先 *Generate release notes*，再把 CHANGELOG 的分区（New Features/Bug Fixes）补在最上面。
+
+### Contributors 是怎么来的
+
+Release 里的 **“What's Changed”** 和 **“New Contributors”**（`* @user made their first contribution in #123`）是 GitHub 的 *Generate release notes* 按**合并的 Pull Request 作者**自动生成的：
+
+- 想有这一块，改动必须**通过 PR 合并**（哪怕是你自己：开分支 → 提 PR → 合并）。这样 GitHub 才知道每条改动归属谁、谁是首次贡献者。
+- 若**直接 `push` 到 `main`（无 PR）**，*Generate release notes* 没有 PR 可归属，Contributors 就是空的。
+- 注意区分：仓库侧栏 / `graphs/contributors` 的 Contributors 是另一套统计（按 default 分支的 commit 作者），与 Release 无关，直接 push 也会计入。
+
+**结论**：想让每个 Release 都带 Contributors，就把改动走 **PR 流程**；发版时用 *Generate release notes* 拿到 Contributors，再把 CHANGELOG 的分区补在上面。
