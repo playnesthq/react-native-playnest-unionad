@@ -565,6 +565,10 @@ interface EcpmInfo {
 
 ---
 
+## 更新日志
+
+见 [CHANGELOG.md](CHANGELOG.md)（最新版本在最上面）。
+
 ## 维护者
 
 本库移植自 Flutter 插件 flutter_unionad。两者的能力对应关系、移植决策，以及 flutter_unionad 有新提交时如何快速同步，见 [docs/PORTING.md](docs/PORTING.md)。
