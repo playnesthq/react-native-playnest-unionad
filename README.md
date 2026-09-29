@@ -91,6 +91,10 @@ source 'https://cdn.cocoapods.org/'
 
 `Podfile` 里 `platform :ios, '12.0'`（或更高）。
 
+### 6. UIScene 生命周期
+
+本库**兼容 UIScene**：内部通过 `UIApplication.connectedScenes` 定位当前活动 scene 的 window/rootViewController 来展示广告，无论宿主 App 用经典 `UIApplicationDelegate` 还是 UIScene(`SceneDelegate`)生命周期都能正常弹出开屏/插屏等广告，无需额外配置。`example` 已采用 UIScene 生命周期作为参考。
+
 ---
 
 ## Android 接入
