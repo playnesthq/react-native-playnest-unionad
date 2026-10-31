@@ -23,6 +23,10 @@
 
 - example 采用 UIScene 生命周期（新增 `SceneDelegate`），作为 iOS UIScene 适配参考。库本身已兼容 UIScene（通过 `UIApplication.connectedScenes` 定位活动 scene 的 window 展示广告），无需改动。
 
+### 📝 Docs
+
+- README 新增 iOS「SKAdNetworkItems（广告归因）」与「PrivacyInfo.xcprivacy（隐私清单）」两节配置说明。
+
 ## [1.1.0] - 2026-09-30
 
 ### 🚀 New Features

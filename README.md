@@ -83,15 +83,114 @@ source 'https://cdn.cocoapods.org/'
 
 > ⚠️ `NSAllowsArbitraryLoads=true` 是全局放开,App Store 审核可能要求说明理由。若担心审核,可改用更精细的 `NSExceptionDomains` 只对穿山甲相关域名放行(见穿山甲官方 iOS 文档的域名清单)。基本的广告展示不加也能跑(主素材是 HTTPS),但为完整加载建议配置。
 
-### 4. arm64 模拟器
+### 4. Info.plist：SKAdNetworkItems（广告归因，建议）
+
+`SKAdNetworkItems` 用于 StoreKit 广告归因（SKAdNetwork），主要面向**海外 App Store**；国区 App Store 以 CAID 为主，SKAdNetwork 意义有限，但配上无害。在 `Info.plist` 声明穿山甲自家的网络 ID（最小集）：
+
+```xml
+<key>SKAdNetworkItems</key>
+<array>
+  <dict>
+    <key>SKAdNetworkIdentifier</key>
+    <string>238da6jt44.skadnetwork</string> <!-- 穿山甲 国区 (CN) -->
+  </dict>
+  <dict>
+    <key>SKAdNetworkIdentifier</key>
+    <string>x2jnk7ly8j.skadnetwork</string> <!-- 穿山甲官方 -->
+  </dict>
+  <dict>
+    <key>SKAdNetworkIdentifier</key>
+    <string>22mmun2rn5.skadnetwork</string> <!-- Pangle 海外 (非 CN) -->
+  </dict>
+</array>
+```
+
+> 若用 **GroMore 聚合**接入多家广告网络，需把各聚合伙伴（优量汇 / 快手等）的 SKAdNetwork ID 一并加入——完整清单随 SDK 版本变化，请以**穿山甲后台 / GroMore 接入文档**为准，不要照抄网上二手列表。
+
+### 5. PrivacyInfo.xcprivacy（隐私清单）
+
+自 2024 年起，App Store 要求 App 及三方 SDK 提供**隐私清单** `PrivacyInfo.xcprivacy`，声明收集的数据类型、是否用于追踪、追踪域名，以及使用的 "Required Reason API"。
+
+- **SDK 侧**：`Ads-CN-Beta`（7.8.x）框架内已随附自己的 `PrivacyInfo.xcprivacy`，覆盖 SDK 自身的 API 使用——你**无需**替 SDK 补充（可在 Pods 里对应 `.xcframework` 内确认）。
+- **宿主 App 侧**：仍需为你自己的 App 提供一份 `PrivacyInfo.xcprivacy`。因为本库用 IDFA + ATT 投放广告，至少要声明 `NSPrivacyTracking=true`、追踪域名、以及收集的数据类型（如设备 ID）。
+
+新建 `ios/<App>/PrivacyInfo.xcprivacy` 并加入 target，骨架示例：
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>NSPrivacyTracking</key>
+  <true/>
+  <key>NSPrivacyTrackingDomains</key>
+  <array>
+    <!-- 以穿山甲官方隐私文档给出的追踪域名为准 -->
+  </array>
+  <key>NSPrivacyCollectedDataTypes</key>
+  <array>
+    <dict>
+      <key>NSPrivacyCollectedDataType</key>
+      <string>NSPrivacyCollectedDataTypeDeviceID</string>
+      <key>NSPrivacyCollectedDataTypeLinked</key><false/>
+      <key>NSPrivacyCollectedDataTypeTracking</key><true/>
+      <key>NSPrivacyCollectedDataTypePurposes</key>
+      <array>
+        <string>NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising</string>
+      </array>
+    </dict>
+  </array>
+  <key>NSPrivacyAccessedAPITypes</key>
+  <array>
+    <dict>
+      <key>NSPrivacyAccessedAPIType</key>
+      <string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
+      <key>NSPrivacyAccessedAPITypeReasons</key>
+      <array>
+        <string>C617.1</string>
+      </array>
+    </dict>
+    <dict>
+      <key>NSPrivacyAccessedAPIType</key>
+      <string>NSPrivacyAccessedAPICategorySystemBootTime</string>
+      <key>NSPrivacyAccessedAPITypeReasons</key>
+      <array>
+        <string>35F9.1</string>
+      </array>
+    </dict>
+    <dict>
+      <key>NSPrivacyAccessedAPIType</key>
+      <string>NSPrivacyAccessedAPICategoryDiskSpace</string>
+      <key>NSPrivacyAccessedAPITypeReasons</key>
+      <array>
+        <string>7D9E.1</string>
+        <string>E174.1</string>
+      </array>
+    </dict>
+    <dict>
+      <key>NSPrivacyAccessedAPIType</key>
+      <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+      <key>NSPrivacyAccessedAPITypeReasons</key>
+      <array>
+        <string>CA92.1</string>
+      </array>
+    </dict>
+  </array>
+</dict>
+</plist>
+```
+
+> 以上是**骨架**：`NSPrivacyTrackingDomains` 的具体域名、`NSPrivacyAccessedAPITypes` 的完整项，需按穿山甲官方文档和你 App 的实际使用补全。React Native 工程通常还需声明 File Timestamp / System Boot Time / Disk Space 等 Required Reason API。
+
+### 6. arm64 模拟器
 
 本库 podspec **未锁定** `x86_64`，`Ads-CN-Beta` 自带 `arm64_x86_64-simulator` 切片，可在 Apple Silicon 上直接跑 arm64 模拟器调试广告（免真机、免签名）。
 
-### 5. 最低系统版本
+### 7. 最低系统版本
 
 `Podfile` 里 `platform :ios, '12.0'`（或更高）。
 
-### 6. UIScene 生命周期
+### 8. UIScene 生命周期
 
 本库**兼容 UIScene**：内部通过 `UIApplication.connectedScenes` 定位当前活动 scene 的 window/rootViewController 来展示广告，无论宿主 App 用经典 `UIApplicationDelegate` 还是 UIScene(`SceneDelegate`)生命周期都能正常弹出开屏/插屏等广告，无需额外配置。`example` 已采用 UIScene 生命周期作为参考。
 
