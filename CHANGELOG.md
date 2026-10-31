@@ -13,6 +13,12 @@
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-10-31
+
+### 🐛 Bug Fixes
+
+- Android：Banner / 信息流原生（Native）/ Draw 在**未设置 `width`** 时自适应整屏宽。此前广告在 `onAfterUpdateTransaction`（视图测量前）加载，View 宽度为 0，导致 `setExpressViewAcceptedSize(0, …)`，广告不渲染或不铺满；现回退到 `displayMetrics.widthPixels`（Draw 的 height 同样回退到 `heightPixels`），与 iOS 的整屏兜底行为对齐。
+
 ### 🔧 Changed
 
 - example 采用 UIScene 生命周期（新增 `SceneDelegate`），作为 iOS UIScene 适配参考。库本身已兼容 UIScene（通过 `UIApplication.connectedScenes` 定位活动 scene 的 window 展示广告），无需改动。
@@ -43,7 +49,8 @@
 - 穿山甲 SDK：Android `mediation-sdk` 7.7.1.6，iOS `Ads-CN-Beta` 7.8.0.0。
 - 许可证 Apache-2.0（移植自 flutter_unionad，见 [NOTICE](NOTICE)）。
 
-[Unreleased]: https://github.com/playnesthq/react-native-playnest-unionad/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/playnesthq/react-native-playnest-unionad/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/playnesthq/react-native-playnest-unionad/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/playnesthq/react-native-playnest-unionad/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/playnesthq/react-native-playnest-unionad/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/playnesthq/react-native-playnest-unionad/releases/tag/v1.0.0

@@ -33,7 +33,13 @@ class PlaynestBannerAdView(context: ThemedReactContext) : PlaynestAdFrameLayout(
         val activity = (context as ThemedReactContext).currentActivity ?: return
         var w = expressWidth.toFloat()
         var h = expressHeight.toFloat()
-        if (w <= 0f) w = (width / resources.displayMetrics.density)
+        // Width not set: use the measured view width, falling back to the full
+        // screen width when the view hasn't been laid out yet (load runs in
+        // onAfterUpdateTransaction, before measure).
+        if (w <= 0f) {
+            val px = if (width > 0) width else resources.displayMetrics.widthPixels
+            w = px / resources.displayMetrics.density
+        }
         if (h <= 0f) h = 60f
         val adSlot = AdSlot.Builder()
             .setCodeId(codeId)

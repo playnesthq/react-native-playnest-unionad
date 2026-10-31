@@ -35,8 +35,17 @@ class PlaynestDrawAdView(context: ThemedReactContext) : PlaynestAdFrameLayout(co
         val activity = (context as ThemedReactContext).currentActivity ?: return
         var w = expressWidth.toFloat()
         var h = expressHeight.toFloat()
-        if (w <= 0f) w = (width / resources.displayMetrics.density)
-        if (h <= 0f) h = (height / resources.displayMetrics.density)
+        // Size not set: use the measured view size, falling back to the full
+        // screen size when the view hasn't been laid out yet (load runs in
+        // onAfterUpdateTransaction, before measure). Draw is immersive/full-screen.
+        if (w <= 0f) {
+            val px = if (width > 0) width else resources.displayMetrics.widthPixels
+            w = px / resources.displayMetrics.density
+        }
+        if (h <= 0f) {
+            val px = if (height > 0) height else resources.displayMetrics.heightPixels
+            h = px / resources.displayMetrics.density
+        }
         val adSlot = AdSlot.Builder()
             .setCodeId(codeId)
             .setAdCount(1)
