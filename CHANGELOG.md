@@ -13,6 +13,17 @@
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-11-06
+
+### ⚠️ Breaking Changes
+
+- **视图组件更名，旧名已移除**：`PlaynestBannerAd` / `PlaynestNativeAd` / `PlaynestDrawAd` / `PlaynestSplashAd` → `UnionadBannerAd` / `UnionadNativeAd` / `UnionadDrawAd` / `UnionadSplashAd`。从 1.x 升级需把旧组件名全部替换为新名；函数式 API（`register` / `showSplashAd` / `loadRewardVideoAd` 等）不变。
+
+### 🔧 Changed
+
+- **原生模块 / 视图 / podspec / 包名统一重命名为 `RNUnionad*`**：iOS podspec `PlaynestUnionad` → `RNUnionad`、Android 包 `com.playnestunionad` → `com.rnunionad`、codegen spec `PlaynestUnionadSpec` → `RNUnionadSpec`、Fabric 组件 `Playnest*View` → `RNUnionad*View`。**对使用 autolinking 的集成方透明**：升级后 iOS 重新 `pod install`、Android 重新构建即可，npm 包名与 JS 导入路径不变。
+- `package.json` 描述改为英文；扩充 npm keywords（穿山甲 / pangle / gromore / 各广告类型 / idfa / fabric 等）提升可检索性。
+
 ## [1.1.1] - 2026-10-31
 
 ### 🐛 Bug Fixes
@@ -53,7 +64,8 @@
 - 穿山甲 SDK：Android `mediation-sdk` 7.7.1.6，iOS `Ads-CN-Beta` 7.8.0.0。
 - 许可证 Apache-2.0（移植自 flutter_unionad，见 [NOTICE](NOTICE)）。
 
-[Unreleased]: https://github.com/playnesthq/react-native-playnest-unionad/compare/v1.1.1...HEAD
+[Unreleased]: https://github.com/playnesthq/react-native-playnest-unionad/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/playnesthq/react-native-playnest-unionad/compare/v1.1.1...v2.0.0
 [1.1.1]: https://github.com/playnesthq/react-native-playnest-unionad/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/playnesthq/react-native-playnest-unionad/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/playnesthq/react-native-playnest-unionad/compare/v1.0.0...v1.0.1

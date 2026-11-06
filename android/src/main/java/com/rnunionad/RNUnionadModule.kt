@@ -1,4 +1,4 @@
-package com.playnestunionad
+package com.rnunionad
 
 import android.text.TextUtils
 import com.bytedance.sdk.openadsdk.TTAdSdk
@@ -6,8 +6,8 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableMap
 
-class PlaynestUnionadModule(reactContext: ReactApplicationContext) :
-  NativePlaynestUnionadSpec(reactContext) {
+class RNUnionadModule(reactContext: ReactApplicationContext) :
+  NativeRNUnionadSpec(reactContext) {
 
   private val ctx: ReactApplicationContext = reactContext
 
@@ -159,7 +159,7 @@ class PlaynestUnionadModule(reactContext: ReactApplicationContext) :
   }
 
   companion object {
-    const val NAME = NativePlaynestUnionadSpec.NAME
+    const val NAME = NativeRNUnionadSpec.NAME
   }
 }
 

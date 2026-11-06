@@ -1,9 +1,9 @@
-#import "PlaynestBannerView.h"
+#import "RNUnionadBannerView.h"
 
-#import <react/renderer/components/PlaynestUnionadSpec/ComponentDescriptors.h>
-#import <react/renderer/components/PlaynestUnionadSpec/EventEmitters.h>
-#import <react/renderer/components/PlaynestUnionadSpec/Props.h>
-#import <react/renderer/components/PlaynestUnionadSpec/RCTComponentViewHelpers.h>
+#import <react/renderer/components/RNUnionadSpec/ComponentDescriptors.h>
+#import <react/renderer/components/RNUnionadSpec/EventEmitters.h>
+#import <react/renderer/components/RNUnionadSpec/Props.h>
+#import <react/renderer/components/RNUnionadSpec/RCTComponentViewHelpers.h>
 #import <React/RCTFabricComponentsPlugins.h>
 #import <BUAdSDK/BUAdSDK.h>
 
@@ -28,7 +28,7 @@ static std::string PBV_ecpmJSON(id ritInfo) {
     return s ? std::string(s.UTF8String) : std::string();
 }
 
-// 获取当前可展示的 UIViewController（与 PlaynestUnionad.mm 中的逻辑一致，独立一份避免跨文件依赖）
+// 获取当前可展示的 UIViewController（与 RNUnionad.mm 中的逻辑一致，独立一份避免跨文件依赖）
 static UIViewController *PBV_currentViewController(void) {
     UIViewController *root = nil;
     if (@available(iOS 13.0, *)) {
@@ -45,10 +45,10 @@ static UIViewController *PBV_currentViewController(void) {
     return root ?: [UIViewController new];
 }
 
-@interface PlaynestBannerView () <RCTPlaynestBannerViewViewProtocol, BUNativeExpressBannerViewDelegate>
+@interface RNUnionadBannerView () <RCTRNUnionadBannerViewViewProtocol, BUNativeExpressBannerViewDelegate>
 @end
 
-@implementation PlaynestBannerView {
+@implementation RNUnionadBannerView {
     BUNativeExpressBannerView *_bannerView;
     NSString *_loadedCodeId;
 }
@@ -58,19 +58,19 @@ static UIViewController *PBV_currentViewController(void) {
 }
 
 + (ComponentDescriptorProvider)componentDescriptorProvider {
-    return concreteComponentDescriptorProvider<PlaynestBannerViewComponentDescriptor>();
+    return concreteComponentDescriptorProvider<RNUnionadBannerViewComponentDescriptor>();
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        static const auto defaultProps = std::make_shared<const PlaynestBannerViewProps>();
+        static const auto defaultProps = std::make_shared<const RNUnionadBannerViewProps>();
         _props = defaultProps;
     }
     return self;
 }
 
 - (void)updateProps:(const Props::Shared &)props oldProps:(const Props::Shared &)oldProps {
-    const auto &newProps = *std::static_pointer_cast<const PlaynestBannerViewProps>(props);
+    const auto &newProps = *std::static_pointer_cast<const RNUnionadBannerViewProps>(props);
     NSString *codeId = newProps.iosCodeId.empty()
         ? nil
         : [NSString stringWithUTF8String:newProps.iosCodeId.c_str()];
@@ -104,8 +104,8 @@ static UIViewController *PBV_currentViewController(void) {
     _bannerView.frame = self.bounds;
 }
 
-- (const PlaynestBannerViewEventEmitter &)bannerEventEmitter {
-    return static_cast<const PlaynestBannerViewEventEmitter &>(*_eventEmitter);
+- (const RNUnionadBannerViewEventEmitter &)bannerEventEmitter {
+    return static_cast<const RNUnionadBannerViewEventEmitter &>(*_eventEmitter);
 }
 
 #pragma mark BUNativeExpressBannerViewDelegate
@@ -155,6 +155,6 @@ static UIViewController *PBV_currentViewController(void) {
 
 @end
 
-Class<RCTComponentViewProtocol> PlaynestBannerViewCls(void) {
-    return PlaynestBannerView.class;
+Class<RCTComponentViewProtocol> RNUnionadBannerViewCls(void) {
+    return RNUnionadBannerView.class;
 }

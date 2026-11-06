@@ -1,4 +1,4 @@
-#import "PlaynestUnionad.h"
+#import "RNUnionad.h"
 #import <BUAdSDK/BUAdSDK.h>
 #import <UIKit/UIKit.h>
 #import <AppTrackingTransparency/AppTrackingTransparency.h>
@@ -64,9 +64,9 @@ static NSString *PU_ecpmJSON(id ritInfo) {
     return data ? [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] : nil;
 }
 
-#pragma mark - PlaynestUnionad
+#pragma mark - RNUnionad
 
-@interface PlaynestUnionad () <BUNativeExpressRewardedVideoAdDelegate, BUNativeExpressFullscreenVideoAdDelegate, BUSplashAdDelegate>
+@interface RNUnionad () <BUNativeExpressRewardedVideoAdDelegate, BUNativeExpressFullscreenVideoAdDelegate, BUSplashAdDelegate>
 @property (nonatomic, strong) BUNativeExpressRewardedVideoAd *rewardAd;
 @property (nonatomic, assign) BOOL hasSentShowEvent;
 @property (nonatomic, assign) BOOL hasSentReadyEvent;
@@ -75,7 +75,7 @@ static NSString *PU_ecpmJSON(id ritInfo) {
 @property (nonatomic, strong) BUSplashAd *splashAd;
 @end
 
-@implementation PlaynestUnionad
+@implementation RNUnionad
 
 #pragma mark 初始化 / 版本
 
@@ -506,12 +506,12 @@ static NSString *const kSplashAdType = @"splashAd";
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
     (const facebook::react::ObjCTurboModule::InitParams &)params
 {
-    return std::make_shared<facebook::react::NativePlaynestUnionadSpecJSI>(params);
+    return std::make_shared<facebook::react::NativeRNUnionadSpecJSI>(params);
 }
 
 + (NSString *)moduleName
 {
-  return @"PlaynestUnionad";
+  return @"RNUnionad";
 }
 
 @end

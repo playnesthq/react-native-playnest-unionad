@@ -1,4 +1,4 @@
-package com.playnestunionad
+package com.rnunionad
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -21,7 +21,7 @@ import com.facebook.react.bridge.WritableMap
  */
 @SuppressLint("StaticFieldLeak")
 object SplashAd {
-    private const val TAG = "PlaynestUnionad"
+    private const val TAG = "RNUnionad"
     private const val AD_TYPE = "splashAd"
 
     private var splashAd: CSJSplashAd? = null

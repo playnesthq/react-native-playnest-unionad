@@ -1,4 +1,4 @@
-package com.playnestunionad
+package com.rnunionad
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -17,11 +17,11 @@ import com.facebook.react.bridge.WritableMap
 
 /**
  * 激励视频广告管理（对齐 flutter_unionad 的事件语义）。
- * 事件通过 [emit] 回调发送，payload 结构见 src/NativePlaynestUnionad.ts 的 UnionadNativeEvent。
+ * 事件通过 [emit] 回调发送，payload 结构见 src/NativeRNUnionad.ts 的 UnionadNativeEvent。
  */
 @SuppressLint("StaticFieldLeak")
 object RewardVideoAd {
-    private const val TAG = "PlaynestUnionad"
+    private const val TAG = "RNUnionad"
     private const val AD_TYPE = "rewardAd"
 
     private var mttRewardVideoAd: TTRewardVideoAd? = null

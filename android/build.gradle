@@ -1,5 +1,5 @@
 buildscript {
-  ext.PlaynestUnionad = [
+  ext.RNUnionad = [
     kotlinVersion: "2.0.21",
     minSdkVersion: 24,
     compileSdkVersion: 36
@@ -10,7 +10,7 @@ buildscript {
       return rootProject.ext.get(prop)
     }
 
-    return PlaynestUnionad[prop]
+    return RNUnionad[prop]
   }
 
   repositories {
@@ -39,7 +39,7 @@ repositories {
 }
 
 android {
-  namespace "com.playnestunionad"
+  namespace "com.rnunionad"
 
   compileSdkVersion getExtOrDefault("compileSdkVersion")
 

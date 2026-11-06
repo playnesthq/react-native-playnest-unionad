@@ -1,4 +1,4 @@
-package com.playnestunionad
+package com.rnunionad
 
 import android.widget.FrameLayout
 import com.facebook.react.uimanager.ThemedReactContext
@@ -14,7 +14,7 @@ import com.facebook.react.uimanager.ThemedReactContext
  * 主动对容器及其子 View 走一遍 measure + layout。
  * 这是 RN 原生视图库（webview / video / mobile-ads 等）通用的做法。
  */
-abstract class PlaynestAdFrameLayout(context: ThemedReactContext) : FrameLayout(context) {
+abstract class RNUnionadFrameLayout(context: ThemedReactContext) : FrameLayout(context) {
 
     private val measureAndLayout = Runnable {
         measure(

@@ -20,8 +20,8 @@ Significant changes from the original work:
   - Reimplemented the platform bridge for React Native New Architecture
     (Flutter MethodChannel/EventChannel/PlatformView -> TurboModule /
     codegen EventEmitter / Fabric components).
-  - New package/namespace and API surface (com.playnestunionad /
-    PlaynestUnionad); no original gstory/flutter_unionad identifiers reused.
+  - New package/namespace and API surface (com.rnunionad /
+    RNUnionad); no original gstory/flutter_unionad identifiers reused.
 
 The underlying 穿山甲 (Pangle / GroMore) SDK is a product of Beijing Bytedance
 Technology Co., Ltd. and is subject to its own license terms; it is not

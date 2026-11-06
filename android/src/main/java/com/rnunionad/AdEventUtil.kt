@@ -1,4 +1,4 @@
-package com.playnestunionad
+package com.rnunionad
 
 import android.content.Context
 import android.view.View

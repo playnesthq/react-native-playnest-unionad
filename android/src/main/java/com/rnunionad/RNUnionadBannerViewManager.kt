@@ -1,4 +1,4 @@
-package com.playnestunionad
+package com.rnunionad
 
 import android.view.View
 import android.widget.FrameLayout
@@ -12,10 +12,10 @@ import com.facebook.react.bridge.Arguments
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
-import com.facebook.react.viewmanagers.PlaynestBannerViewManagerInterface
-import com.facebook.react.viewmanagers.PlaynestBannerViewManagerDelegate
+import com.facebook.react.viewmanagers.RNUnionadBannerViewManagerInterface
+import com.facebook.react.viewmanagers.RNUnionadBannerViewManagerDelegate
 
-class PlaynestBannerAdView(context: ThemedReactContext) : PlaynestAdFrameLayout(context) {
+class RNUnionadBannerAdView(context: ThemedReactContext) : RNUnionadFrameLayout(context) {
     var androidCodeId: String? = null
     var expressWidth: Double = 0.0
     var expressHeight: Double = 0.0
@@ -107,33 +107,33 @@ class PlaynestBannerAdView(context: ThemedReactContext) : PlaynestAdFrameLayout(
     }
 }
 
-@ReactModule(name = PlaynestBannerViewManager.NAME)
-class PlaynestBannerViewManager : SimpleViewManager<PlaynestBannerAdView>(),
-    PlaynestBannerViewManagerInterface<PlaynestBannerAdView> {
+@ReactModule(name = RNUnionadBannerViewManager.NAME)
+class RNUnionadBannerViewManager : SimpleViewManager<RNUnionadBannerAdView>(),
+    RNUnionadBannerViewManagerInterface<RNUnionadBannerAdView> {
 
-    private val mDelegate = PlaynestBannerViewManagerDelegate(this)
+    private val mDelegate = RNUnionadBannerViewManagerDelegate(this)
 
     override fun getDelegate() = mDelegate
     override fun getName() = NAME
-    override fun createViewInstance(context: ThemedReactContext) = PlaynestBannerAdView(context)
+    override fun createViewInstance(context: ThemedReactContext) = RNUnionadBannerAdView(context)
 
-    override fun setAndroidCodeId(view: PlaynestBannerAdView, value: String?) {
+    override fun setAndroidCodeId(view: RNUnionadBannerAdView, value: String?) {
         view.androidCodeId = value
     }
-    override fun setIosCodeId(view: PlaynestBannerAdView, value: String?) {}
-    override fun setExpressWidth(view: PlaynestBannerAdView, value: Double) {
+    override fun setIosCodeId(view: RNUnionadBannerAdView, value: String?) {}
+    override fun setExpressWidth(view: RNUnionadBannerAdView, value: Double) {
         view.expressWidth = value
     }
-    override fun setExpressHeight(view: PlaynestBannerAdView, value: Double) {
+    override fun setExpressHeight(view: RNUnionadBannerAdView, value: Double) {
         view.expressHeight = value
     }
 
-    override fun onAfterUpdateTransaction(view: PlaynestBannerAdView) {
+    override fun onAfterUpdateTransaction(view: RNUnionadBannerAdView) {
         super.onAfterUpdateTransaction(view)
         view.maybeLoad()
     }
 
-    override fun onDropViewInstance(view: PlaynestBannerAdView) {
+    override fun onDropViewInstance(view: RNUnionadBannerAdView) {
         view.destroyAd()
         super.onDropViewInstance(view)
     }
@@ -142,6 +142,6 @@ class PlaynestBannerViewManager : SimpleViewManager<PlaynestBannerAdView>(),
         viewAdEventConstants("onAdShow", "onAdClick", "onAdFail", "onAdEcpm", "onAdDislike")
 
     companion object {
-        const val NAME = "PlaynestBannerView"
+        const val NAME = "RNUnionadBannerView"
     }
 }

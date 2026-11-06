@@ -1,4 +1,4 @@
-package com.playnestunionad
+package com.rnunionad
 
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -12,10 +12,10 @@ import com.facebook.react.bridge.Arguments
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
-import com.facebook.react.viewmanagers.PlaynestSplashViewManagerInterface
-import com.facebook.react.viewmanagers.PlaynestSplashViewManagerDelegate
+import com.facebook.react.viewmanagers.RNUnionadSplashViewManagerInterface
+import com.facebook.react.viewmanagers.RNUnionadSplashViewManagerDelegate
 
-class PlaynestSplashAdView(context: ThemedReactContext) : PlaynestAdFrameLayout(context) {
+class RNUnionadSplashAdView(context: ThemedReactContext) : RNUnionadFrameLayout(context) {
     var androidCodeId: String? = null
     var expressWidth: Double = 0.0
     var expressHeight: Double = 0.0
@@ -106,7 +106,7 @@ class PlaynestSplashAdView(context: ThemedReactContext) : PlaynestAdFrameLayout(
             }
         })
         if (hasExplicitSize) {
-            // 内嵌：按指定区域展示在组件容器里（PlaynestAdFrameLayout 负责摆放子视图）。
+            // 内嵌：按指定区域展示在组件容器里（RNUnionadFrameLayout 负责摆放子视图）。
             removeAllViews()
             addView(ad.splashView)
         } else {
@@ -135,30 +135,30 @@ class PlaynestSplashAdView(context: ThemedReactContext) : PlaynestAdFrameLayout(
     }
 }
 
-@ReactModule(name = PlaynestSplashViewManager.NAME)
-class PlaynestSplashViewManager : SimpleViewManager<PlaynestSplashAdView>(),
-    PlaynestSplashViewManagerInterface<PlaynestSplashAdView> {
+@ReactModule(name = RNUnionadSplashViewManager.NAME)
+class RNUnionadSplashViewManager : SimpleViewManager<RNUnionadSplashAdView>(),
+    RNUnionadSplashViewManagerInterface<RNUnionadSplashAdView> {
 
-    private val mDelegate = PlaynestSplashViewManagerDelegate(this)
+    private val mDelegate = RNUnionadSplashViewManagerDelegate(this)
 
     override fun getDelegate() = mDelegate
     override fun getName() = NAME
-    override fun createViewInstance(context: ThemedReactContext) = PlaynestSplashAdView(context)
+    override fun createViewInstance(context: ThemedReactContext) = RNUnionadSplashAdView(context)
 
-    override fun setAndroidCodeId(view: PlaynestSplashAdView, value: String?) { view.androidCodeId = value }
-    override fun setIosCodeId(view: PlaynestSplashAdView, value: String?) {}
-    override fun setExpressWidth(view: PlaynestSplashAdView, value: Double) { view.expressWidth = value }
-    override fun setExpressHeight(view: PlaynestSplashAdView, value: Double) { view.expressHeight = value }
-    override fun setTimeout(view: PlaynestSplashAdView, value: Int) { view.timeout = value }
-    override fun setIsShake(view: PlaynestSplashAdView, value: Boolean) { view.isShake = value }
-    override fun setSupportDeepLink(view: PlaynestSplashAdView, value: Boolean) { view.supportDeepLink = value }
+    override fun setAndroidCodeId(view: RNUnionadSplashAdView, value: String?) { view.androidCodeId = value }
+    override fun setIosCodeId(view: RNUnionadSplashAdView, value: String?) {}
+    override fun setExpressWidth(view: RNUnionadSplashAdView, value: Double) { view.expressWidth = value }
+    override fun setExpressHeight(view: RNUnionadSplashAdView, value: Double) { view.expressHeight = value }
+    override fun setTimeout(view: RNUnionadSplashAdView, value: Int) { view.timeout = value }
+    override fun setIsShake(view: RNUnionadSplashAdView, value: Boolean) { view.isShake = value }
+    override fun setSupportDeepLink(view: RNUnionadSplashAdView, value: Boolean) { view.supportDeepLink = value }
 
-    override fun onAfterUpdateTransaction(view: PlaynestSplashAdView) {
+    override fun onAfterUpdateTransaction(view: RNUnionadSplashAdView) {
         super.onAfterUpdateTransaction(view)
         view.maybeLoad()
     }
 
-    override fun onDropViewInstance(view: PlaynestSplashAdView) {
+    override fun onDropViewInstance(view: RNUnionadSplashAdView) {
         view.destroyAd()
         super.onDropViewInstance(view)
     }
@@ -167,6 +167,6 @@ class PlaynestSplashViewManager : SimpleViewManager<PlaynestSplashAdView>(),
         viewAdEventConstants("onAdShow", "onAdClick", "onAdSkip", "onAdFinish", "onAdFail", "onAdEcpm")
 
     companion object {
-        const val NAME = "PlaynestSplashView"
+        const val NAME = "RNUnionadSplashView"
     }
 }

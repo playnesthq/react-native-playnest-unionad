@@ -28,10 +28,10 @@ import {
   loadFullScreenVideoAd,
   showFullScreenVideoAd,
   showSplashAd,
-  PlaynestBannerAd,
-  PlaynestNativeAd,
-  PlaynestDrawAd,
-  PlaynestSplashAd,
+  UnionadBannerAd,
+  UnionadNativeAd,
+  UnionadDrawAd,
+  UnionadSplashAd,
 } from 'react-native-playnest-unionad';
 
 const APP_ID = '5750023';
@@ -198,7 +198,7 @@ export default function App() {
           />
         </Section>
         {showSplashView && (
-          <PlaynestSplashAd
+          <UnionadSplashAd
             androidCodeId={SPLASH_CODE_ID}
             iosCodeId={SPLASH_CODE_ID}
             onShow={(e) => append(`开屏视图: onShow ${e.width}x${e.height}`)}
@@ -228,7 +228,7 @@ export default function App() {
           />
         </Section>
         {showBanner && (
-          <PlaynestBannerAd
+          <UnionadBannerAd
             androidCodeId={BANNER_CODE_ID}
             iosCodeId={BANNER_CODE_ID}
             width={300}
@@ -249,7 +249,7 @@ export default function App() {
           />
         </Section>
         {showNative && (
-          <PlaynestNativeAd
+          <UnionadNativeAd
             androidCodeId={NATIVE_CODE_ID}
             iosCodeId={NATIVE_CODE_ID}
             width={330}
@@ -270,7 +270,7 @@ export default function App() {
           />
         </Section>
         {showDraw && (
-          <PlaynestDrawAd
+          <UnionadDrawAd
             androidCodeId={DRAW_CODE_ID}
             iosCodeId={DRAW_CODE_ID}
             width={340}

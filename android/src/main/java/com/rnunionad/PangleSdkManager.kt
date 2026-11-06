@@ -1,4 +1,4 @@
-package com.playnestunionad
+package com.rnunionad
 
 import android.content.Context
 import android.util.Log
@@ -18,7 +18,7 @@ import com.facebook.react.bridge.ReadableMap
  * 支持核心初始化 + 版本号 + Android 隐私配置(TTCustomController) + 流量分组(Segment)。
  */
 object PangleSdkManager {
-    private const val TAG = "PlaynestUnionad"
+    private const val TAG = "RNUnionad"
 
     @Volatile
     var isInit = false
@@ -26,7 +26,7 @@ object PangleSdkManager {
 
     fun getAdManager(): TTAdManager {
         if (!isInit) {
-            throw RuntimeException("调用广告前，请先调用 register() 初始化 react-native-playnest-unionad")
+            throw RuntimeException("调用广告前，请先调用 register() 初始化 RNUnionad")
         }
         return TTAdSdk.getAdManager()
     }

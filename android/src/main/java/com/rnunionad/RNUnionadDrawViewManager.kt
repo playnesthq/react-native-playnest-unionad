@@ -1,4 +1,4 @@
-package com.playnestunionad
+package com.rnunionad
 
 import android.view.View
 import android.widget.FrameLayout
@@ -6,22 +6,22 @@ import com.bytedance.sdk.openadsdk.AdSlot
 import com.bytedance.sdk.openadsdk.TTAdDislike
 import com.bytedance.sdk.openadsdk.TTAdNative
 import com.bytedance.sdk.openadsdk.TTAdSdk
-import com.bytedance.sdk.openadsdk.TTFeedAd
+import com.bytedance.sdk.openadsdk.TTDrawFeedAd
 import com.bytedance.sdk.openadsdk.mediation.ad.MediationAdSlot
 import com.bytedance.sdk.openadsdk.mediation.ad.MediationExpressRenderListener
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
-import com.facebook.react.viewmanagers.PlaynestNativeViewManagerInterface
-import com.facebook.react.viewmanagers.PlaynestNativeViewManagerDelegate
+import com.facebook.react.viewmanagers.RNUnionadDrawViewManagerInterface
+import com.facebook.react.viewmanagers.RNUnionadDrawViewManagerDelegate
 
-class PlaynestNativeAdView(context: ThemedReactContext) : PlaynestAdFrameLayout(context) {
+class RNUnionadDrawAdView(context: ThemedReactContext) : RNUnionadFrameLayout(context) {
     var androidCodeId: String? = null
     var expressWidth: Double = 0.0
     var expressHeight: Double = 0.0
     var isMuted: Boolean = true
-    private var feedAd: TTFeedAd? = null
+    private var drawAd: TTDrawFeedAd? = null
     private var loaded = false
 
     fun maybeLoad() {
@@ -35,45 +35,43 @@ class PlaynestNativeAdView(context: ThemedReactContext) : PlaynestAdFrameLayout(
         val activity = (context as ThemedReactContext).currentActivity ?: return
         var w = expressWidth.toFloat()
         var h = expressHeight.toFloat()
-        // Width not set: use the measured view width, falling back to the full
-        // screen width when the view hasn't been laid out yet (load runs in
-        // onAfterUpdateTransaction, before measure).
+        // Size not set: use the measured view size, falling back to the full
+        // screen size when the view hasn't been laid out yet (load runs in
+        // onAfterUpdateTransaction, before measure). Draw is immersive/full-screen.
         if (w <= 0f) {
             val px = if (width > 0) width else resources.displayMetrics.widthPixels
             w = px / resources.displayMetrics.density
         }
-        if (h <= 0f) h = 0f
+        if (h <= 0f) {
+            val px = if (height > 0) height else resources.displayMetrics.heightPixels
+            h = px / resources.displayMetrics.density
+        }
         val adSlot = AdSlot.Builder()
             .setCodeId(codeId)
             .setAdCount(1)
-            .setImageAcceptedSize(dp2px(context, w), if (h > 0f) dp2px(context, h) else 0)
+            .setImageAcceptedSize(dp2px(context, w), dp2px(context, h))
             .setExpressViewAcceptedSize(w, h)
             .setMediationAdSlot(MediationAdSlot.Builder().setMuted(isMuted).build())
             .build()
         val native = TTAdSdk.getAdManager().createAdNative(activity)
-        native.loadFeedAd(adSlot, object : TTAdNative.FeedAdListener {
+        native.loadDrawFeedAd(adSlot, object : TTAdNative.DrawFeedAdListener {
             override fun onError(code: Int, message: String?) {
                 dispatchAdEvent("onAdFail", Arguments.createMap().apply { putString("error", "$code $message") })
             }
 
-            override fun onFeedAdLoad(ads: MutableList<TTFeedAd>?) {
+            override fun onDrawFeedAdLoad(ads: MutableList<TTDrawFeedAd>?) {
                 if (ads.isNullOrEmpty()) {
                     dispatchAdEvent("onAdFail", Arguments.createMap().apply { putString("error", "ads is empty") })
                     return
                 }
-                feedAd = ads[0]
+                drawAd = ads[0]
                 show()
             }
         })
     }
 
     private fun show() {
-        val ad = feedAd ?: return
-        val manager = ad.mediationManager
-        if (manager == null || !manager.isExpress) {
-            dispatchAdEvent("onAdFail", Arguments.createMap().apply { putString("error", "自渲染信息流广告暂不支持") })
-            return
-        }
+        val ad = drawAd ?: return
         bindDislike(ad)
         ad.setExpressRenderListener(object : MediationExpressRenderListener {
             override fun onRenderSuccess(v: View?, w: Float, h: Float, boolean: Boolean) {
@@ -102,7 +100,7 @@ class PlaynestNativeAdView(context: ThemedReactContext) : PlaynestAdFrameLayout(
         ad.render()
     }
 
-    private fun bindDislike(ad: TTFeedAd) {
+    private fun bindDislike(ad: TTDrawFeedAd) {
         ad.setDislikeCallback((context as ThemedReactContext).currentActivity, object : TTAdDislike.DislikeInteractionCallback {
             override fun onShow() {}
             override fun onSelected(pos: Int, reason: String?, enforce: Boolean) {
@@ -114,41 +112,44 @@ class PlaynestNativeAdView(context: ThemedReactContext) : PlaynestAdFrameLayout(
     }
 
     fun destroyAd() {
-        feedAd?.destroy()
-        feedAd = null
+        drawAd?.destroy()
+        drawAd = null
     }
 }
 
-@ReactModule(name = PlaynestNativeViewManager.NAME)
-class PlaynestNativeViewManager : SimpleViewManager<PlaynestNativeAdView>(),
-    PlaynestNativeViewManagerInterface<PlaynestNativeAdView> {
+@ReactModule(name = RNUnionadDrawViewManager.NAME)
+class RNUnionadDrawViewManager : SimpleViewManager<RNUnionadDrawAdView>(),
+    RNUnionadDrawViewManagerInterface<RNUnionadDrawAdView> {
 
-    private val mDelegate = PlaynestNativeViewManagerDelegate(this)
+    private val mDelegate = RNUnionadDrawViewManagerDelegate(this)
 
     override fun getDelegate() = mDelegate
     override fun getName() = NAME
-    override fun createViewInstance(context: ThemedReactContext) = PlaynestNativeAdView(context)
+    override fun createViewInstance(context: ThemedReactContext) = RNUnionadDrawAdView(context)
 
-    override fun setAndroidCodeId(view: PlaynestNativeAdView, value: String?) { view.androidCodeId = value }
-    override fun setIosCodeId(view: PlaynestNativeAdView, value: String?) {}
-    override fun setExpressWidth(view: PlaynestNativeAdView, value: Double) { view.expressWidth = value }
-    override fun setExpressHeight(view: PlaynestNativeAdView, value: Double) { view.expressHeight = value }
-    override fun setIsMuted(view: PlaynestNativeAdView, value: Boolean) { view.isMuted = value }
+    override fun setAndroidCodeId(view: RNUnionadDrawAdView, value: String?) { view.androidCodeId = value }
+    override fun setIosCodeId(view: RNUnionadDrawAdView, value: String?) {}
+    override fun setExpressWidth(view: RNUnionadDrawAdView, value: Double) { view.expressWidth = value }
+    override fun setExpressHeight(view: RNUnionadDrawAdView, value: Double) { view.expressHeight = value }
+    override fun setIsMuted(view: RNUnionadDrawAdView, value: Boolean) { view.isMuted = value }
 
-    override fun onAfterUpdateTransaction(view: PlaynestNativeAdView) {
+    override fun onAfterUpdateTransaction(view: RNUnionadDrawAdView) {
         super.onAfterUpdateTransaction(view)
         view.maybeLoad()
     }
 
-    override fun onDropViewInstance(view: PlaynestNativeAdView) {
+    override fun onDropViewInstance(view: RNUnionadDrawAdView) {
         view.destroyAd()
         super.onDropViewInstance(view)
     }
 
     override fun getExportedCustomDirectEventTypeConstants(): MutableMap<String, Any> =
-        viewAdEventConstants("onAdShow", "onAdClick", "onAdFail", "onAdEcpm", "onAdDislike")
+        viewAdEventConstants(
+            "onAdShow", "onAdClick", "onAdFail", "onAdEcpm", "onAdDislike",
+            "onAdVideoPlay", "onAdVideoPause", "onAdVideoStop"
+        )
 
     companion object {
-        const val NAME = "PlaynestNativeView"
+        const val NAME = "RNUnionadDrawView"
     }
 }

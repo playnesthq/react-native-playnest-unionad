@@ -1,4 +1,4 @@
-package com.playnestunionad
+package com.rnunionad
 
 import com.facebook.react.BaseReactPackage
 import com.facebook.react.bridge.NativeModule
@@ -7,10 +7,10 @@ import com.facebook.react.module.model.ReactModuleInfo
 import com.facebook.react.module.model.ReactModuleInfoProvider
 import com.facebook.react.uimanager.ViewManager
 
-class PlaynestUnionadPackage : BaseReactPackage() {
+class RNUnionadPackage : BaseReactPackage() {
   override fun getModule(name: String, reactContext: ReactApplicationContext): NativeModule? {
-    return if (name == PlaynestUnionadModule.NAME) {
-      PlaynestUnionadModule(reactContext)
+    return if (name == RNUnionadModule.NAME) {
+      RNUnionadModule(reactContext)
     } else {
       null
     }
@@ -18,17 +18,17 @@ class PlaynestUnionadPackage : BaseReactPackage() {
 
   override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> =
     listOf(
-      PlaynestBannerViewManager(),
-      PlaynestNativeViewManager(),
-      PlaynestDrawViewManager(),
-      PlaynestSplashViewManager(),
+      RNUnionadBannerViewManager(),
+      RNUnionadNativeViewManager(),
+      RNUnionadDrawViewManager(),
+      RNUnionadSplashViewManager(),
     )
 
   override fun getReactModuleInfoProvider() = ReactModuleInfoProvider {
     mapOf(
-      PlaynestUnionadModule.NAME to ReactModuleInfo(
-        name = PlaynestUnionadModule.NAME,
-        className = PlaynestUnionadModule.NAME,
+      RNUnionadModule.NAME to ReactModuleInfo(
+        name = RNUnionadModule.NAME,
+        className = RNUnionadModule.NAME,
         canOverrideExistingModule = false,
         needsEagerInit = false,
         isCxxModule = false,
