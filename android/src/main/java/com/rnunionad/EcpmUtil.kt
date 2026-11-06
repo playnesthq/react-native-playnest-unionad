@@ -1,4 +1,4 @@
-package com.playnestunionad
+package com.rnunionad
 
 import com.bytedance.sdk.openadsdk.mediation.manager.MediationAdEcpmInfo
 import org.json.JSONObject

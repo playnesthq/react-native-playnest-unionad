@@ -3,9 +3,6 @@ import {
   type TurboModule,
   type CodegenTypes,
 } from 'react-native';
-// 注意：事件类型必须用 CodegenTypes.EventEmitter / CodegenTypes.Int32 的“限定名”直接书写，
-// 不要 `type EventEmitter<T> = CodegenTypes.EventEmitter<T>` 这样起本地别名——codegen 解析
-// 事件类型时按注解名查找本地类型别名，同名别名会自引用导致死循环、卡住 codegen。
 
 /**
  * 统一广告事件负载。所有广告类型共用一个事件流 onAdEvent，通过 adType + onAdMethod 区分。
@@ -82,4 +79,4 @@ export interface Spec extends TurboModule {
   readonly onAdEvent: CodegenTypes.EventEmitter<UnionadNativeEvent>;
 }
 
-export default TurboModuleRegistry.getEnforcing<Spec>('PlaynestUnionad');
+export default TurboModuleRegistry.getEnforcing<Spec>('RNUnionad');

@@ -1,7 +1,7 @@
 {
   "name": "react-native-playnest-unionad",
-  "version": "1.1.1",
-  "description": "React Native 穿山甲(GroMore/UnionAD)广告插件：开屏/Banner/信息流原生/Draw信息流/激励视频/全屏视频插屏",
+  "version": "2.0.0",
+  "description": "React Native Pangle (GroMore / CSJ UnionAD) Mediation SDK plugin: Splash, Banner, Native Feed, Draw Feed, Rewarded Video, and Fullscreen Interstitial ads.",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
   "exports": {
@@ -126,18 +126,18 @@
     ]
   },
   "codegenConfig": {
-    "name": "PlaynestUnionadSpec",
+    "name": "RNUnionadSpec",
     "type": "all",
     "jsSrcsDir": "src",
     "android": {
-      "javaPackageName": "com.playnestunionad"
+      "javaPackageName": "com.rnunionad"
     },
     "ios": {
       "componentProvider": {
-        "PlaynestBannerView": "PlaynestBannerView",
-        "PlaynestNativeView": "PlaynestNativeView",
-        "PlaynestDrawView": "PlaynestDrawView",
-        "PlaynestSplashView": "PlaynestSplashView"
+        "RNUnionadBannerView": "RNUnionadBannerView",
+        "RNUnionadNativeView": "RNUnionadNativeView",
+        "RNUnionadDrawView": "RNUnionadDrawView",
+        "RNUnionadSplashView": "RNUnionadSplashView"
       }
     }
   },

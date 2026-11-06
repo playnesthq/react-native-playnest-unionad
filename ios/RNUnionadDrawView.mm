@@ -1,15 +1,15 @@
-#import "PlaynestNativeView.h"
+#import "RNUnionadDrawView.h"
 
-#import <react/renderer/components/PlaynestUnionadSpec/ComponentDescriptors.h>
-#import <react/renderer/components/PlaynestUnionadSpec/EventEmitters.h>
-#import <react/renderer/components/PlaynestUnionadSpec/Props.h>
-#import <react/renderer/components/PlaynestUnionadSpec/RCTComponentViewHelpers.h>
+#import <react/renderer/components/RNUnionadSpec/ComponentDescriptors.h>
+#import <react/renderer/components/RNUnionadSpec/EventEmitters.h>
+#import <react/renderer/components/RNUnionadSpec/Props.h>
+#import <react/renderer/components/RNUnionadSpec/RCTComponentViewHelpers.h>
 #import <React/RCTFabricComponentsPlugins.h>
 #import <BUAdSDK/BUAdSDK.h>
 
 using namespace facebook::react;
 
-static UIViewController *PNV_currentViewController(void) {
+static UIViewController *PDV_currentViewController(void) {
     UIViewController *root = nil;
     if (@available(iOS 13.0, *)) {
         for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
@@ -25,7 +25,7 @@ static UIViewController *PNV_currentViewController(void) {
     return root ?: [UIViewController new];
 }
 
-static std::string PNV_ecpmJSON(id ritInfo) {
+static std::string PDV_ecpmJSON(id ritInfo) {
     if (ritInfo == nil) return std::string();
     NSArray<NSString *> *keys = @[
         @"adnName", @"customAdnName", @"slotID", @"levelTag", @"ecpm",
@@ -43,10 +43,10 @@ static std::string PNV_ecpmJSON(id ritInfo) {
     return s ? std::string(s.UTF8String) : std::string();
 }
 
-@interface PlaynestNativeView () <RCTPlaynestNativeViewViewProtocol, BUNativeExpressAdViewDelegate, BUCustomEventProtocol>
+@interface RNUnionadDrawView () <RCTRNUnionadDrawViewViewProtocol, BUNativeExpressAdViewDelegate, BUCustomEventProtocol>
 @end
 
-@implementation PlaynestNativeView {
+@implementation RNUnionadDrawView {
     BUNativeExpressAdManager *_adManager;
     BUNativeExpressAdView *_adView;
     NSString *_loadedCodeId;
@@ -57,23 +57,23 @@ static std::string PNV_ecpmJSON(id ritInfo) {
 }
 
 + (ComponentDescriptorProvider)componentDescriptorProvider {
-    return concreteComponentDescriptorProvider<PlaynestNativeViewComponentDescriptor>();
+    return concreteComponentDescriptorProvider<RNUnionadDrawViewComponentDescriptor>();
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        static const auto defaultProps = std::make_shared<const PlaynestNativeViewProps>();
+        static const auto defaultProps = std::make_shared<const RNUnionadDrawViewProps>();
         _props = defaultProps;
     }
     return self;
 }
 
-- (const PlaynestNativeViewEventEmitter &)nativeEventEmitter {
-    return static_cast<const PlaynestNativeViewEventEmitter &>(*_eventEmitter);
+- (const RNUnionadDrawViewEventEmitter &)drawEventEmitter {
+    return static_cast<const RNUnionadDrawViewEventEmitter &>(*_eventEmitter);
 }
 
 - (void)updateProps:(const Props::Shared &)props oldProps:(const Props::Shared &)oldProps {
-    const auto &newProps = *std::static_pointer_cast<const PlaynestNativeViewProps>(props);
+    const auto &newProps = *std::static_pointer_cast<const RNUnionadDrawViewProps>(props);
     NSString *codeId = newProps.iosCodeId.empty()
         ? nil
         : [NSString stringWithUTF8String:newProps.iosCodeId.c_str()];
@@ -81,24 +81,19 @@ static std::string PNV_ecpmJSON(id ritInfo) {
     CGFloat h = (CGFloat)newProps.expressHeight;
     if (codeId.length > 0 && ![codeId isEqualToString:_loadedCodeId]) {
         _loadedCodeId = codeId;
-        [self loadNative:codeId width:w height:h muted:newProps.isMuted];
+        [self loadDraw:codeId width:w height:h muted:newProps.isMuted];
     }
     [super updateProps:props oldProps:oldProps];
 }
 
-- (void)loadNative:(NSString *)codeId width:(CGFloat)w height:(CGFloat)h muted:(BOOL)muted {
+- (void)loadDraw:(NSString *)codeId width:(CGFloat)w height:(CGFloat)h muted:(BOOL)muted {
     if (w <= 0) w = self.bounds.size.width > 0 ? self.bounds.size.width : UIScreen.mainScreen.bounds.size.width;
-    if (h <= 0) h = self.bounds.size.height > 0 ? self.bounds.size.height : 100;
+    if (h <= 0) h = self.bounds.size.height > 0 ? self.bounds.size.height : UIScreen.mainScreen.bounds.size.height;
     CGSize size = CGSizeMake(w, h);
     BUAdSlot *slot = [[BUAdSlot alloc] init];
     slot.ID = codeId;
-    slot.adType = BUAdSlotAdTypeFeed;
-    slot.position = BUAdSlotPositionFeed;
+    slot.adSize = size;
     slot.mediation.mutedIfCan = muted;
-    BUSize *imgSize = [[BUSize alloc] init];
-    imgSize.width = (NSInteger)w;
-    imgSize.height = (NSInteger)h;
-    slot.imgSize = imgSize;
     _adManager = [[BUNativeExpressAdManager alloc] initWithSlot:slot adSize:size];
     _adManager.delegate = self;
     [_adManager loadAdDataWithCount:1];
@@ -115,7 +110,7 @@ static std::string PNV_ecpmJSON(id ritInfo) {
                                views:(NSArray<__kindof BUNativeExpressAdView *> *)views {
     if (views.count > 0) {
         BUNativeExpressAdView *v = views.firstObject;
-        v.rootViewController = PNV_currentViewController();
+        v.rootViewController = PDV_currentViewController();
         [_adView removeFromSuperview];
         _adView = v;
         [v render];
@@ -126,7 +121,7 @@ static std::string PNV_ecpmJSON(id ritInfo) {
 
 - (void)nativeExpressAdFailToLoad:(BUNativeExpressAdManager *)nativeExpressAdManager error:(NSError *_Nullable)error {
     if (_eventEmitter) {
-        [self nativeEventEmitter].onAdFail(
+        [self drawEventEmitter].onAdFail(
             {.error = std::string(error.localizedDescription.UTF8String ?: "")});
     }
 }
@@ -134,24 +129,19 @@ static std::string PNV_ecpmJSON(id ritInfo) {
 - (void)nativeExpressAdViewRenderSuccess:(BUNativeExpressAdView *)nativeExpressAdView {
     nativeExpressAdView.frame = self.bounds;
     if (_eventEmitter) {
-        [self nativeEventEmitter].onAdShow(
+        [self drawEventEmitter].onAdShow(
             {.width = (double)nativeExpressAdView.frame.size.width,
              .height = (double)nativeExpressAdView.frame.size.height});
-    }
-}
-
-- (void)nativeExpressAdViewWillShow:(BUNativeExpressAdView *)nativeExpressAdView {
-    if (_eventEmitter) {
-        std::string ecpm = PNV_ecpmJSON([nativeExpressAdView.mediation getShowEcpmInfo]);
+        std::string ecpm = PDV_ecpmJSON([nativeExpressAdView.mediation getShowEcpmInfo]);
         if (!ecpm.empty()) {
-            [self nativeEventEmitter].onAdEcpm({.ecpm = ecpm});
+            [self drawEventEmitter].onAdEcpm({.ecpm = ecpm});
         }
     }
 }
 
 - (void)nativeExpressAdViewDidClick:(BUNativeExpressAdView *)nativeExpressAdView {
     if (_eventEmitter) {
-        [self nativeEventEmitter].onAdClick({});
+        [self drawEventEmitter].onAdClick({});
     }
 }
 
@@ -159,13 +149,31 @@ static std::string PNV_ecpmJSON(id ritInfo) {
           dislikeWithReason:(NSArray<BUDislikeWords *> *)filterWords {
     if (_eventEmitter) {
         NSString *reason = filterWords.firstObject.name ?: @"";
-        [self nativeEventEmitter].onAdDislike({.reason = std::string(reason.UTF8String)});
+        [self drawEventEmitter].onAdDislike({.reason = std::string(reason.UTF8String)});
     }
     [_adView removeFromSuperview];
 }
 
+- (void)nativeExpressAdView:(BUNativeExpressAdView *)nativeExpressAdView
+             stateDidChanged:(BUPlayerPlayState)playerState {
+    if (!_eventEmitter) return;
+    switch (playerState) {
+        case BUPlayerStatePlaying:
+            [self drawEventEmitter].onAdVideoPlay({});
+            break;
+        case BUPlayerStatePause:
+            [self drawEventEmitter].onAdVideoPause({});
+            break;
+        case BUPlayerStateStopped:
+            [self drawEventEmitter].onAdVideoStop({});
+            break;
+        default:
+            break;
+    }
+}
+
 @end
 
-Class<RCTComponentViewProtocol> PlaynestNativeViewCls(void) {
-    return PlaynestNativeView.class;
+Class<RCTComponentViewProtocol> RNUnionadDrawViewCls(void) {
+    return RNUnionadDrawView.class;
 }

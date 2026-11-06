@@ -9,12 +9,14 @@ React Native 穿山甲(UnionAD)广告插件。完整移植自 Flutter 插件 [fl
 | 激励视频 | `loadRewardVideoAd` / `showRewardVideoAd` | ✅ | ✅ |
 | 全屏视频 / 插屏（二合一） | `loadFullScreenVideoAd` / `showFullScreenVideoAd` | ✅ | ✅ |
 | 开屏（方法式全屏） | `showSplashAd` | ✅ | ✅ |
-| 开屏（视图版） | `<PlaynestSplashAd />` | ✅ | ✅ |
-| Banner | `<PlaynestBannerAd />` | ✅ | ✅ |
-| 信息流原生（模板渲染） | `<PlaynestNativeAd />` | ✅ | ✅ |
-| Draw 信息流（沉浸式视频） | `<PlaynestDrawAd />` | ✅ | ✅ |
+| 开屏（视图版） | `<UnionadSplashAd />` | ✅ | ✅ |
+| Banner | `<UnionadBannerAd />` | ✅ | ✅ |
+| 信息流原生（模板渲染） | `<UnionadNativeAd />` | ✅ | ✅ |
+| Draw 信息流（沉浸式视频） | `<UnionadDrawAd />` | ✅ | ✅ |
 
 > **仅支持 React Native 新架构（New Architecture / Fabric + TurboModules）。** 本库基于 codegen 生成 TurboModule 与 Fabric 组件，未提供旧架构（Paper）桥接。
+
+> **v2.0.0 破坏性变更（组件更名）**：视图组件统一为 `UnionadSplashAd` / `UnionadBannerAd` / `UnionadNativeAd` / `UnionadDrawAd`，**旧名 `PlaynestSplashAd` / `PlaynestBannerAd` / `PlaynestNativeAd` / `PlaynestDrawAd` 已移除**。从 1.x 升级请把这些旧组件名全部替换为新名（函数式 API 如 `showSplashAd`、`register` 等不变）。
 
 ---
 
@@ -493,9 +495,9 @@ const unsub = showSplashAd(
 视图类广告是 React 组件，直接放进布局即可。**必须给尺寸**（`width/height` 或 `style`），否则不可见。
 
 ```tsx
-import { PlaynestBannerAd } from 'react-native-playnest-unionad';
+import { UnionadBannerAd } from 'react-native-playnest-unionad';
 
-<PlaynestBannerAd
+<UnionadBannerAd
   androidCodeId="103686668"      // 必填：Android 广告位 id
   iosCodeId="103686668"          // 必填：iOS 广告位 id
   width={300}                    // 选填：宽度 dp（同时作为容器宽度）
@@ -518,9 +520,9 @@ import { PlaynestBannerAd } from 'react-native-playnest-unionad';
 ## 八、信息流原生（模板渲染，视图组件）
 
 ```tsx
-import { PlaynestNativeAd } from 'react-native-playnest-unionad';
+import { UnionadNativeAd } from 'react-native-playnest-unionad';
 
-<PlaynestNativeAd
+<UnionadNativeAd
   androidCodeId="103686791"      // 必填
   iosCodeId="103686791"          // 必填
   width={330}                    // 选填：宽度 dp
@@ -540,9 +542,9 @@ import { PlaynestNativeAd } from 'react-native-playnest-unionad';
 在信息流基础上多了 3 个视频状态回调。
 
 ```tsx
-import { PlaynestDrawAd } from 'react-native-playnest-unionad';
+import { UnionadDrawAd } from 'react-native-playnest-unionad';
 
-<PlaynestDrawAd
+<UnionadDrawAd
   androidCodeId="103687068"      // 必填
   iosCodeId="103687068"          // 必填
   width={340}                    // 选填：宽度 dp
@@ -565,9 +567,9 @@ import { PlaynestDrawAd } from 'react-native-playnest-unionad';
 与方法式开屏并存。**不传尺寸 = 全屏；传了尺寸 = 按区域内嵌**（底部可留 logo 区）。
 
 ```tsx
-import { PlaynestSplashAd } from 'react-native-playnest-unionad';
+import { UnionadSplashAd } from 'react-native-playnest-unionad';
 
-<PlaynestSplashAd
+<UnionadSplashAd
   androidCodeId="103687131"      // 必填
   iosCodeId="103687131"          // 必填
   // 不传 width/height => 全屏；传了 => 指定区域

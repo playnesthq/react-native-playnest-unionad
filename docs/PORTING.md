@@ -27,7 +27,7 @@ Flutter 与 RN 的差别只在**桥接层**；穿山甲 SDK 的调用逻辑（lo
 
 | 能力 | Flutter | react-native（新架构） |
 |---|---|---|
-| 方法调用 | `MethodChannel('flutter_unionad')` | **TurboModule** `PlaynestUnionad`（codegen spec `src/NativePlaynestUnionad.ts`） |
+| 方法调用 | `MethodChannel('flutter_unionad')` | **TurboModule** `RNUnionad`（codegen spec `src/NativeRNUnionad.ts`） |
 | 事件回调 | 单条 `EventChannel('com.gstory.flutter_unionad/adevent')`，payload 带 `adType` + `onAdMethod` | 单个 codegen `EventEmitter` `onAdEvent`，payload 同样带 `adType` + `onAdMethod`；JS 侧按 `adType` 分发（`setAdEventHandler`） |
 | 视图广告 | `PlatformView`（`registerViewFactory`） | **Fabric 原生组件**（`codegenNativeComponent`；iOS `RCTViewComponentView`，Android `SimpleViewManager`） |
 | 视图广告事件 | 同一条 EventChannel | **Fabric 直接事件**（组件自带 `DirectEventHandler`，如 `onAdShow/onAdFail`），独立于方法事件流 |
@@ -48,38 +48,38 @@ Flutter 与 RN 的差别只在**桥接层**；穿山甲 SDK 的调用逻辑（lo
 | `flutter_unionad_stream.dart`（事件流） | 统一 `onAdEvent` 分发（`setAdEventHandler` / `ensureAdEventSub`） |
 | `FlutterUnionadEcpm.dart` | `EcpmInfo` + `parseEcpmString` |
 | `flutter_unionad_privacy.dart` / `flutter_unionad_user_info.dart` | `IOSPrivacy`（部分；userInfo 分段配置尚未全量移植，见「未尽事项」） |
-| `bannerad/BannerAdView.dart` | `PlaynestBannerAd` + `src/PlaynestBannerViewNativeComponent.ts` |
-| `nativead/NativeAdView.dart` | `PlaynestNativeAd` + `src/PlaynestNativeViewNativeComponent.ts` |
-| `drawfeedad/DrawFeedAdView.dart` | `PlaynestDrawAd` + `src/PlaynestDrawViewNativeComponent.ts` |
-| `splashad/SplashAdView.dart` | `PlaynestSplashAd` + `src/PlaynestSplashViewNativeComponent.ts` |
+| `bannerad/BannerAdView.dart` | `UnionadBannerAd` + `src/RNUnionadBannerViewNativeComponent.ts` |
+| `nativead/NativeAdView.dart` | `UnionadNativeAd` + `src/RNUnionadNativeViewNativeComponent.ts` |
+| `drawfeedad/DrawFeedAdView.dart` | `UnionadDrawAd` + `src/RNUnionadDrawViewNativeComponent.ts` |
+| `splashad/SplashAdView.dart` | `UnionadSplashAd` + `src/RNUnionadSplashViewNativeComponent.ts` |
 
 ### iOS（Swift → ObjC）
 
 | flutter (ios/Classes/) | 本库 (ios/) |
 |---|---|
-| `SwiftFlutterUnionadPlugin.swift` / `TTAdManagerHolder.swift` | `PlaynestUnionad.mm`（register/版本/主题/ATT） |
-| `rewardedvideoad/RewardedVideoAd.swift` | `PlaynestUnionad.mm` 内激励部分 |
-| `fullscreenvideoadinteraction/FullScreenVideoAdInteraction.swift` | `PlaynestUnionad.mm` 内全屏/插屏部分 |
-| `splashad/SplashAdView*.swift` | `PlaynestUnionad.mm`（方法式）+ `PlaynestSplashView.mm`（视图版） |
-| `bannerad/BannerAdView*.swift` | `PlaynestBannerView.mm` |
-| `nativead/NativeAdView*.swift` | `PlaynestNativeView.mm` |
-| `drawfeedad/DrawFeedAdView*.swift` | `PlaynestDrawView.mm` |
-| `utils/BUMRitInfo+Dictionary.swift` | `PlaynestUnionad.mm` 内 eCPM KVC→JSON |
+| `SwiftFlutterUnionadPlugin.swift` / `TTAdManagerHolder.swift` | `RNUnionad.mm`（register/版本/主题/ATT） |
+| `rewardedvideoad/RewardedVideoAd.swift` | `RNUnionad.mm` 内激励部分 |
+| `fullscreenvideoadinteraction/FullScreenVideoAdInteraction.swift` | `RNUnionad.mm` 内全屏/插屏部分 |
+| `splashad/SplashAdView*.swift` | `RNUnionad.mm`（方法式）+ `RNUnionadSplashView.mm`（视图版） |
+| `bannerad/BannerAdView*.swift` | `RNUnionadBannerView.mm` |
+| `nativead/NativeAdView*.swift` | `RNUnionadNativeView.mm` |
+| `drawfeedad/DrawFeedAdView*.swift` | `RNUnionadDrawView.mm` |
+| `utils/BUMRitInfo+Dictionary.swift` | `RNUnionad.mm` 内 eCPM KVC→JSON |
 
 ### Android（Kotlin → Kotlin）
 
-| flutter (…/com/gstory/flutter_unionad/) | 本库 (…/com/playnestunionad/) |
+| flutter (…/com/gstory/flutter_unionad/) | 本库 (…/com/rnunionad/) |
 |---|---|
-| 插件主类 + `TTAdManagerHolder` | `PlaynestUnionadModule.kt` + `PangleSdkManager.kt` |
+| 插件主类 + `TTAdManagerHolder` | `RNUnionadModule.kt` + `PangleSdkManager.kt` |
 | `rewardvideoad/` | `RewardVideoAd.kt` |
 | `fullscreenvideoadinteraction/` | `FullScreenVideoAd.kt` |
 | `splashad/`（方法式） | `SplashAd.kt` |
-| `bannerad/` | `PlaynestBannerViewManager.kt` |
-| `nativead/` | `PlaynestNativeViewManager.kt` |
-| `drawfeedad/` | `PlaynestDrawViewManager.kt` |
-| `splashad/`（视图版） | `PlaynestSplashViewManager.kt` |
+| `bannerad/` | `RNUnionadBannerViewManager.kt` |
+| `nativead/` | `RNUnionadNativeViewManager.kt` |
+| `drawfeedad/` | `RNUnionadDrawViewManager.kt` |
+| `splashad/`（视图版） | `RNUnionadSplashViewManager.kt` |
 | eCPM 工具 | `EcpmUtil.kt` |
-| —（RN 特有） | `PlaynestUnionadPackage.kt`（注册模块+ViewManager）、`AdEventUtil.kt`（Fabric 事件派发）、`PlaynestAdFrameLayout.kt`（见下方布局修复） |
+| —（RN 特有） | `RNUnionadPackage.kt`（注册模块+ViewManager）、`AdEventUtil.kt`（Fabric 事件派发）、`RNUnionadFrameLayout.kt`（见下方布局修复） |
 
 ---
 
@@ -87,9 +87,10 @@ Flutter 与 RN 的差别只在**桥接层**；穿山甲 SDK 的调用逻辑（lo
 
 | flutter_unionad | 本库 |
 |---|---|
-| 包名 `com.gstory.flutter_unionad` | `com.playnestunionad` |
-| 插件名 `flutter_unionad` | `PlaynestUnionad` |
-| 视图 `com.gstory.flutter_unionad/BannerAdView` 等 | Fabric 组件 `PlaynestBannerView` / `PlaynestNativeView` / `PlaynestDrawView` / `PlaynestSplashView` |
+| 包名 `com.gstory.flutter_unionad` | `com.rnunionad` |
+| 插件名 `flutter_unionad` | `RNUnionad`（TurboModule / podspec / codegen spec `RNUnionadSpec`） |
+| 视图 `com.gstory.flutter_unionad/BannerAdView` 等 | Fabric 组件 `RNUnionadBannerView` / `RNUnionadNativeView` / `RNUnionadDrawView` / `RNUnionadSplashView` |
+| 公开 JS 组件 | `UnionadBannerAd` / `UnionadNativeAd` / `UnionadDrawAd` / `UnionadSplashAd`（v2.0.0 起旧名 `Playnest*Ad` 已移除） |
 
 > 本库刻意采用全新命名，不复用任何 gstory / flutter_unionad 标识。
 
@@ -100,9 +101,9 @@ Flutter 与 RN 的差别只在**桥接层**；穿山甲 SDK 的调用逻辑（lo
 这些是 flutter 版本没有、但 RN 新架构必须处理的点，同步时不要回退：
 
 1. **codegen 类型不能起本地别名**。spec 里必须写 `CodegenTypes.EventEmitter<T>` / `CodegenTypes.Double` 等**限定名**，绝不能 `type EventEmitter<T> = CodegenTypes.EventEmitter<T>` —— 会让 codegen 死循环卡死。
-2. **iOS 模块须继承生成基类**：`@interface PlaynestUnionad : NativePlaynestUnionadSpecBase <NativePlaynestUnionadSpec>`，否则 `emitOnAdEvent:` 找不到。
-3. **改了 spec（`NativePlaynestUnionad.ts` 方法/事件）后必须重跑 `pod install`** 重新生成 codegen，否则 iOS 编译报 "no visible selector"。
-4. **Android 视图广告的布局修复（重要）**：Fabric 下 React 布局一次性下发，SDK 在渲染成功回调里 `addView()` 动态加入的广告子视图不在 shadow tree 中，不会被 measure/layout → 停在 0×0 不可见。解决：所有视图广告容器继承 `PlaynestAdFrameLayout`（重写 `requestLayout()` 主动 `post` 一次 measure+layout）。**新增任何视图广告都要继承它。**
+2. **iOS 模块须继承生成基类**：`@interface RNUnionad : NativeRNUnionadSpecBase <NativeRNUnionadSpec>`，否则 `emitOnAdEvent:` 找不到。
+3. **改了 spec（`NativeRNUnionad.ts` 方法/事件）后必须重跑 `pod install`** 重新生成 codegen，否则 iOS 编译报 "no visible selector"。
+4. **Android 视图广告的布局修复（重要）**：Fabric 下 React 布局一次性下发，SDK 在渲染成功回调里 `addView()` 动态加入的广告子视图不在 shadow tree 中，不会被 measure/layout → 停在 0×0 不可见。解决：所有视图广告容器继承 `RNUnionadFrameLayout`（重写 `requestLayout()` 主动 `post` 一次 measure+layout）。**新增任何视图广告都要继承它。**
 5. **Android SDK 依赖**：用穿山甲**融合SDK** `com.pangle_beta.cn:mediation-sdk`（=`open_ad_sdk`，flutter 同款，穿山甲广告位可用），**不要**用 `com.pangle.cn:ads-sdk-pro`（不兼容，穿山甲广告位会报 40006）。
 6. **Android 不声明 `TTFileProvider`**：SDK 的该 provider 继承旧 support-v4，在纯 AndroidX RN 工程会启动崩溃。核心广告展示不需要它。
 7. **iOS ATT 崩溃**：宿主 Info.plist 必须有 `NSUserTrackingUsageDescription`（库无法替宿主补）。
@@ -116,7 +117,7 @@ Flutter 与 RN 的差别只在**桥接层**；穿山甲 SDK 的调用逻辑（lo
 1. **看 diff 属于哪一类**：
    - 纯 SDK 升版 → 见第 2 步；
    - 新增/修改某广告能力 → 定位到「文件对应表」里对应的 RN 文件改；
-   - 新增广告类型 → JS 加 API/组件 spec、iOS 加 `.mm`、Android 加 Manager，并在 `PlaynestUnionadPackage.kt`（Android）、`package.json > codegenConfig.ios.componentProvider`（iOS 视图）注册；视图类务必继承 `PlaynestAdFrameLayout`（Android）。
+   - 新增广告类型 → JS 加 API/组件 spec、iOS 加 `.mm`、Android 加 Manager，并在 `RNUnionadPackage.kt`（Android）、`package.json > codegenConfig.ios.componentProvider`（iOS 视图）注册；视图类务必继承 `RNUnionadFrameLayout`（Android）。
 2. **SDK 升版**：
    - iOS：改 `*.podspec` 的 `Ads-CN-Beta/*` 版本 → `pod install`。留意 SDK 选择器变更（历史上 `loadData` vs `loadAdData` 用 `respondsToSelector` 兜底）。
    - Android：改 `android/build.gradle` 的 `com.pangle_beta.cn:mediation-sdk:<版本>`（[可用版本列表](https://artifact.bytedance.com/repository/pangle/com/pangle_beta/cn/mediation-sdk/maven-metadata.xml)）。**只改一行版本号即可**，无需再动本地 aar。

@@ -1,9 +1,9 @@
-#import "PlaynestSplashView.h"
+#import "RNUnionadSplashView.h"
 
-#import <react/renderer/components/PlaynestUnionadSpec/ComponentDescriptors.h>
-#import <react/renderer/components/PlaynestUnionadSpec/EventEmitters.h>
-#import <react/renderer/components/PlaynestUnionadSpec/Props.h>
-#import <react/renderer/components/PlaynestUnionadSpec/RCTComponentViewHelpers.h>
+#import <react/renderer/components/RNUnionadSpec/ComponentDescriptors.h>
+#import <react/renderer/components/RNUnionadSpec/EventEmitters.h>
+#import <react/renderer/components/RNUnionadSpec/Props.h>
+#import <react/renderer/components/RNUnionadSpec/RCTComponentViewHelpers.h>
 #import <React/RCTFabricComponentsPlugins.h>
 #import <BUAdSDK/BUAdSDK.h>
 
@@ -43,10 +43,10 @@ static std::string PSV_ecpmJSON(id ritInfo) {
     return s ? std::string(s.UTF8String) : std::string();
 }
 
-@interface PlaynestSplashView () <RCTPlaynestSplashViewViewProtocol, BUSplashAdDelegate>
+@interface RNUnionadSplashView () <RCTRNUnionadSplashViewViewProtocol, BUSplashAdDelegate>
 @end
 
-@implementation PlaynestSplashView {
+@implementation RNUnionadSplashView {
     BUSplashAd *_splashAd;
     NSString *_loadedCodeId;
 }
@@ -56,23 +56,23 @@ static std::string PSV_ecpmJSON(id ritInfo) {
 }
 
 + (ComponentDescriptorProvider)componentDescriptorProvider {
-    return concreteComponentDescriptorProvider<PlaynestSplashViewComponentDescriptor>();
+    return concreteComponentDescriptorProvider<RNUnionadSplashViewComponentDescriptor>();
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        static const auto defaultProps = std::make_shared<const PlaynestSplashViewProps>();
+        static const auto defaultProps = std::make_shared<const RNUnionadSplashViewProps>();
         _props = defaultProps;
     }
     return self;
 }
 
-- (const PlaynestSplashViewEventEmitter &)splashEventEmitter {
-    return static_cast<const PlaynestSplashViewEventEmitter &>(*_eventEmitter);
+- (const RNUnionadSplashViewEventEmitter &)splashEventEmitter {
+    return static_cast<const RNUnionadSplashViewEventEmitter &>(*_eventEmitter);
 }
 
 - (void)updateProps:(const Props::Shared &)props oldProps:(const Props::Shared &)oldProps {
-    const auto &newProps = *std::static_pointer_cast<const PlaynestSplashViewProps>(props);
+    const auto &newProps = *std::static_pointer_cast<const RNUnionadSplashViewProps>(props);
     NSString *codeId = newProps.iosCodeId.empty()
         ? nil
         : [NSString stringWithUTF8String:newProps.iosCodeId.c_str()];
@@ -160,6 +160,6 @@ static std::string PSV_ecpmJSON(id ritInfo) {
 
 @end
 
-Class<RCTComponentViewProtocol> PlaynestSplashViewCls(void) {
-    return PlaynestSplashView.class;
+Class<RCTComponentViewProtocol> RNUnionadSplashViewCls(void) {
+    return RNUnionadSplashView.class;
 }

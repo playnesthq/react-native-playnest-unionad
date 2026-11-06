@@ -1,11 +1,9 @@
 import { View, type StyleProp, type ViewStyle } from 'react-native';
-import PlaynestUnionad, {
-  type UnionadNativeEvent,
-} from './NativePlaynestUnionad';
-import PlaynestBannerNativeView from './PlaynestBannerViewNativeComponent';
-import PlaynestNativeNativeView from './PlaynestNativeViewNativeComponent';
-import PlaynestDrawNativeView from './PlaynestDrawViewNativeComponent';
-import PlaynestSplashNativeView from './PlaynestSplashViewNativeComponent';
+import RNUnionad, { type UnionadNativeEvent } from './NativeRNUnionad';
+import RNUnionadBannerNativeView from './RNUnionadBannerViewNativeComponent';
+import RNUnionadNativeNativeView from './RNUnionadNativeViewNativeComponent';
+import RNUnionadDrawNativeView from './RNUnionadDrawViewNativeComponent';
+import RNUnionadSplashNativeView from './RNUnionadSplashViewNativeComponent';
 
 /** 主题模式 */
 export const UnionadTheme = {
@@ -205,24 +203,24 @@ export function register(config: UnionadConfig): Promise<boolean> {
   } else {
     delete payload.userInfo;
   }
-  return PlaynestUnionad.register(payload);
+  return RNUnionad.register(payload);
 }
 
 /** 获取穿山甲 SDK 版本号 */
 export function getSDKVersion(): Promise<string> {
-  return PlaynestUnionad.getSDKVersion();
+  return RNUnionad.getSDKVersion();
 }
 
 /** 获取主题模式：0 正常(日间)，1 夜间 */
 export function getThemeStatus(): Promise<number> {
-  return PlaynestUnionad.getThemeStatus();
+  return RNUnionad.getThemeStatus();
 }
 
 /**
  * 请求权限。iOS 返回 ATT 授权状态（见 UnionadPermission），Android 返回 3。
  */
 export function requestPermissionIfNecessary(): Promise<number> {
-  return PlaynestUnionad.requestPermissionIfNecessary();
+  return RNUnionad.requestPermissionIfNecessary();
 }
 
 /**
@@ -233,7 +231,7 @@ export function requestPermissionIfNecessary(): Promise<number> {
  *   `register` 的 `androidPrivacy.oaid` 传入）。
  */
 export function getAdvertisingIdentifier(): Promise<string> {
-  return PlaynestUnionad.getAdvertisingIdentifier();
+  return RNUnionad.getAdvertisingIdentifier();
 }
 
 /* ============================ 激励视频 ============================ */
@@ -324,7 +322,7 @@ let adEventSub: { remove(): void } | null = null;
 
 function ensureAdEventSub() {
   if (adEventSub) return;
-  adEventSub = PlaynestUnionad.onAdEvent((e: UnionadNativeEvent) => {
+  adEventSub = RNUnionad.onAdEvent((e: UnionadNativeEvent) => {
     adEventHandlers[e.adType]?.(e);
   });
 }
@@ -414,7 +412,7 @@ export function loadRewardVideoAd(
   const unsub = setAdEventHandler('rewardAd', (e) =>
     dispatchRewardEvent(e, callback)
   );
-  PlaynestUnionad.loadRewardVideoAd({
+  RNUnionad.loadRewardVideoAd({
     rewardName: '',
     rewardAmount: 1,
     userID: '',
@@ -428,7 +426,7 @@ export function loadRewardVideoAd(
 
 /** 展示已预加载的激励视频广告。 */
 export function showRewardVideoAd(): Promise<boolean> {
-  return PlaynestUnionad.showRewardVideoAd();
+  return RNUnionad.showRewardVideoAd();
 }
 
 /* ==================== 全屏视频/插屏（二合一） ==================== */
@@ -519,7 +517,7 @@ export function loadFullScreenVideoAd(
   const unsub = setAdEventHandler('fullScreenVideoAdInteraction', (e) =>
     dispatchFullScreenEvent(e, callback)
   );
-  PlaynestUnionad.loadFullScreenVideoAd({
+  RNUnionad.loadFullScreenVideoAd({
     orientation: UnionadOrientation.VERTICAL,
     ...options,
   });
@@ -528,7 +526,7 @@ export function loadFullScreenVideoAd(
 
 /** 展示已预加载的全屏/插屏广告。 */
 export function showFullScreenVideoAd(): Promise<boolean> {
-  return PlaynestUnionad.showFullScreenVideoAd();
+  return RNUnionad.showFullScreenVideoAd();
 }
 
 /* ==================== 开屏（全屏方法式） ==================== */
@@ -601,7 +599,7 @@ export function showSplashAd(
   const unsub = setAdEventHandler('splashAd', (e) =>
     dispatchSplashEvent(e, callback)
   );
-  PlaynestUnionad.showSplashAd({
+  RNUnionad.showSplashAd({
     timeout: 3000,
     width: 0,
     height: 0,
@@ -642,7 +640,7 @@ export interface BannerAdProps extends ViewAdCallbacks {
 }
 
 /** Banner 广告视图组件。 */
-export function PlaynestBannerAd({
+export function UnionadBannerAd({
   androidCodeId,
   iosCodeId,
   width,
@@ -658,7 +656,7 @@ export function PlaynestBannerAd({
     width != null || height != null ? { width, height } : undefined;
   return (
     <View style={[sizeStyle, style]}>
-      <PlaynestBannerNativeView
+      <RNUnionadBannerNativeView
         androidCodeId={androidCodeId}
         iosCodeId={iosCodeId}
         expressWidth={width ?? 0}
@@ -691,7 +689,7 @@ export interface NativeAdProps extends ViewAdCallbacks {
 }
 
 /** 信息流原生广告视图组件。 */
-export function PlaynestNativeAd({
+export function UnionadNativeAd({
   androidCodeId,
   iosCodeId,
   width,
@@ -708,7 +706,7 @@ export function PlaynestNativeAd({
     width != null || height != null ? { width, height } : undefined;
   return (
     <View style={[sizeStyle, style]}>
-      <PlaynestNativeNativeView
+      <RNUnionadNativeNativeView
         androidCodeId={androidCodeId}
         iosCodeId={iosCodeId}
         expressWidth={width ?? 0}
@@ -748,7 +746,7 @@ export interface DrawAdProps extends ViewAdCallbacks {
 }
 
 /** Draw 信息流（沉浸式视频流）广告视图组件。 */
-export function PlaynestDrawAd({
+export function UnionadDrawAd({
   androidCodeId,
   iosCodeId,
   width,
@@ -768,7 +766,7 @@ export function PlaynestDrawAd({
     width != null || height != null ? { width, height } : undefined;
   return (
     <View style={[sizeStyle, style]}>
-      <PlaynestDrawNativeView
+      <RNUnionadDrawNativeView
         androidCodeId={androidCodeId}
         iosCodeId={iosCodeId}
         expressWidth={width ?? 0}
@@ -824,7 +822,7 @@ export interface SplashAdViewProps {
  * 开屏广告视图组件（嵌入式，可在布局里摆放、底部留 logo 区）。
  * 若只需全屏展示，用方法式 showSplashAd 更简单。
  */
-export function PlaynestSplashAd({
+export function UnionadSplashAd({
   androidCodeId,
   iosCodeId,
   width,
@@ -844,7 +842,7 @@ export function PlaynestSplashAd({
     width != null || height != null ? { width, height } : undefined;
   return (
     <View style={[sizeStyle, style]}>
-      <PlaynestSplashNativeView
+      <RNUnionadSplashNativeView
         androidCodeId={androidCodeId}
         iosCodeId={iosCodeId}
         expressWidth={width ?? 0}

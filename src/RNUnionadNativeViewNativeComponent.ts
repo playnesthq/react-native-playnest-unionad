@@ -5,7 +5,6 @@ import {
   type CodegenTypes,
 } from 'react-native';
 
-// Draw 信息流（沉浸式视频流）广告视图。事件与信息流一致，另加视频播放状态事件。
 export interface NativeProps extends ViewProps {
   /** Android 广告位 id 必填 */
   androidCodeId: string;
@@ -29,14 +28,8 @@ export interface NativeProps extends ViewProps {
   onAdEcpm?: CodegenTypes.DirectEventHandler<Readonly<{ ecpm: string }>>;
   /** 点击不感兴趣（关闭） */
   onAdDislike?: CodegenTypes.DirectEventHandler<Readonly<{ reason: string }>>;
-  /** 视频开始播放 */
-  onAdVideoPlay?: CodegenTypes.DirectEventHandler<Readonly<{}>>;
-  /** 视频暂停 */
-  onAdVideoPause?: CodegenTypes.DirectEventHandler<Readonly<{}>>;
-  /** 视频停止 */
-  onAdVideoStop?: CodegenTypes.DirectEventHandler<Readonly<{}>>;
 }
 
 export default codegenNativeComponent<NativeProps>(
-  'PlaynestDrawView'
+  'RNUnionadNativeView'
 ) as HostComponent<NativeProps>;

@@ -3,7 +3,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PlaynestNativeView : RCTViewComponentView
+@interface RNUnionadDrawView : RCTViewComponentView
 @end
 
 NS_ASSUME_NONNULL_END

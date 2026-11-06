@@ -5,8 +5,6 @@ import {
   type CodegenTypes,
 } from 'react-native';
 
-// 注意：CodegenTypes.* 用限定名直写，勿起本地别名（见 NativePlaynestUnionad.ts 说明）。
-// 宽高用 Double（与 flutter_unionad 的 double 对齐，支持小数）。
 export interface NativeProps extends ViewProps {
   /** Android 广告位 id 必填 */
   androidCodeId: string;
@@ -31,5 +29,5 @@ export interface NativeProps extends ViewProps {
 }
 
 export default codegenNativeComponent<NativeProps>(
-  'PlaynestBannerView'
+  'RNUnionadBannerView'
 ) as HostComponent<NativeProps>;

@@ -17,30 +17,6 @@ PODS:
   - hermes-engine (250829098.0.16):
     - hermes-engine/Pre-built (= 250829098.0.16)
   - hermes-engine/Pre-built (250829098.0.16)
-  - PlaynestUnionad (1.0.1):
-    - Ads-CN-Beta/BUAdSDK (= 7.8.0.5)
-    - Ads-CN-Beta/CSJMediation-Only (= 7.8.0.5)
-    - hermes-engine
-    - RCTRequired
-    - RCTTypeSafety
-    - React-bridging
-    - React-Core
-    - React-Core-prebuilt
-    - React-debug
-    - React-Fabric
-    - React-featureflags
-    - React-graphics
-    - React-ImageManager
-    - React-jsi
-    - React-NativeModulesApple
-    - React-RCTFabric
-    - React-renderercss
-    - React-rendererdebug
-    - React-utils
-    - ReactCodegen
-    - ReactCommon/turbomodule/core
-    - ReactNativeDependencies
-    - Yoga
   - RCT-Folly (2024.11.18.00):
     - RCT-Folly/Default (= 2024.11.18.00)
     - ReactNativeDependencies
@@ -1631,6 +1607,30 @@ PODS:
     - React-utils (= 0.87.0)
     - ReactNativeDependencies
   - ReactNativeDependencies (0.87.0)
+  - RNUnionad (2.0.0):
+    - Ads-CN-Beta/BUAdSDK (= 7.8.0.5)
+    - Ads-CN-Beta/CSJMediation-Only (= 7.8.0.5)
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-bridging
+    - React-Core
+    - React-Core-prebuilt
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - Yoga
   - SocketRocket (0.7.1):
     - ReactNativeDependencies
   - Yoga (0.0.0):
@@ -1644,7 +1644,6 @@ DEPENDENCIES:
   - fmt (from `build/rndeps-facades/fmt`)
   - glog (from `build/rndeps-facades/glog`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
-  - PlaynestUnionad (from `../..`)
   - RCT-Folly (from `build/rndeps-facades/RCT-Folly`)
   - RCTDeprecation (from `build/rncore-facades/RCTDeprecation`)
   - RCTRequired (from `build/rncore-facades/RCTRequired`)
@@ -1722,6 +1721,7 @@ DEPENDENCIES:
   - ReactCodegen (from `build/generated/ios/ReactCodegen`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - ReactNativeDependencies (from `../node_modules/react-native/third-party-podspecs/ReactNativeDependencies.podspec`)
+  - RNUnionad (from `../..`)
   - SocketRocket (from `build/rndeps-facades/SocketRocket`)
   - Yoga (from `build/rncore-facades/Yoga`)
 
@@ -1745,8 +1745,6 @@ EXTERNAL SOURCES:
   hermes-engine:
     :podspec: "../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
     :tag: hermes-v250829098.0.16
-  PlaynestUnionad:
-    :path: "../.."
   RCT-Folly:
     :path: build/rndeps-facades/RCT-Folly
   RCTDeprecation:
@@ -1899,6 +1897,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   ReactNativeDependencies:
     :podspec: "../node_modules/react-native/third-party-podspecs/ReactNativeDependencies.podspec"
+  RNUnionad:
+    :path: "../.."
   SocketRocket:
     :path: build/rndeps-facades/SocketRocket
   Yoga:
@@ -1913,7 +1913,6 @@ SPEC CHECKSUMS:
   fmt: ba0886e864ebb21d14c98b2e12e164b8002f5b93
   glog: 3cf7cb46f743c4bc758ae3e6d9c15bd1b4cfd6d4
   hermes-engine: 6a26e94b4a974cbadc751eed9caa12624c38f226
-  PlaynestUnionad: d10eac144926273635a273db63552b322884d17b
   RCT-Folly: 82921e585c0400eda46fac1068297aa9dfb035e4
   RCTDeprecation: 6d66040b74f4be203495adda55b49c1a25190291
   RCTRequired: ebf172e0b04196922ba4640458f9926c1bb34012
@@ -1990,6 +1989,7 @@ SPEC CHECKSUMS:
   ReactCodegen: dca6757feb1e977c5cf6708872d7fe48b5a45528
   ReactCommon: 5f5a302748322015f2e3334869cdd9b4d0395846
   ReactNativeDependencies: ec5530432d8191b38e278117d498aaff05ea9d6f
+  RNUnionad: d758d47c9fa7d442d43796d598cc446c26fca9f1
   SocketRocket: 37aec555668fb852ec12e3c0de59a86ca58f0871
   Yoga: d1c536142c5ff8ec8cd856ab2a7c227a1d875c8e
 
